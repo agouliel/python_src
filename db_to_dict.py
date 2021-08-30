@@ -1,9 +1,10 @@
 import pymssql
+import os
 
 myserver = 'sqlsrv03'
 mydb = 'BIONIA'
-myusername = 'dataminer'
-mypassword = 'dataminer'
+myusername = os.environ['SERVDBUSER']
+mypassword = os.environ['BNFTDBPASS']
 
 conn = pymssql.connect(server=myserver, user=myusername, password=mypassword, database=mydb)
 cursor = conn.cursor()
