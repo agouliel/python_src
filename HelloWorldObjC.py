@@ -1,3 +1,5 @@
+# https://pyobjc.readthedocs.io/en/latest/examples/core/Scripts/HelloWorld/index.html
+
 from Cocoa import NSObject, NSApplication, NSApp, NSWindow, NSButton, NSSound
 from PyObjCTools import AppHelper
 
@@ -56,3 +58,14 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# https://superuser.com/questions/1491509/is-the-format-schema-of-the-apple-music-library-musicdb-used-in-macos-catalina
+
+#import <iTunesLibrary/ITLibrary.h>
+#NSError *error = nil;
+#ITLibrary *library = [ITLibrary libraryWithAPIVersion:@"1.1" error:&error];
+#if (library) {
+#        NSArray *playlists = library.allPlaylists; //  <- NSArray of ITLibPlaylist
+#        NSArray *tracks = library.allMediaItems; //  <- NSArray of ITLibMediaItem
+#}
+
