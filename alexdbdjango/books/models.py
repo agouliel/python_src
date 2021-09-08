@@ -7,6 +7,7 @@ class Tblbookscateg(models.Model):
     class Meta:
         managed = False
         db_table = 'tblbookscateg'
+        verbose_name = 'Category'
 
     def __str__(self):
         return self.cdescr
@@ -19,6 +20,7 @@ class Tblbookslocations(models.Model):
     class Meta:
         managed = False
         db_table = 'tblbookslocations'
+        verbose_name = 'Location'
 
     def __str__(self):
         return self.ldescr
@@ -40,6 +42,7 @@ class Tblbook(models.Model):
     class Meta:
         managed = False
         db_table = 'tblbook'
+        verbose_name = 'Book'
 
     def __str__(self):
         return self.title
