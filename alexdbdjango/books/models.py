@@ -39,6 +39,8 @@ class Tblbook(models.Model):
     location = models.ForeignKey(Tblbookslocations, on_delete=models.CASCADE, db_column='locid')
     category = models.ForeignKey(Tblbookscateg, on_delete=models.CASCADE, db_column='catid')
 
+    #link = "Edit"
+
     class Meta:
         managed = False
         db_table = 'tblbook'

@@ -6,6 +6,9 @@ from .models import Tblbook, Tblbookscateg, Tblbookslocations
 
 class BookAdmin(admin.ModelAdmin):
   list_display = ('title', 'author', 'translator', 'publisher', 'location')
+  #list_display = ('title', 'author', 'translator', 'publisher', 'location', 'link')
+  #list_editable = ('title', 'author', 'translator', 'publisher')
+  #list_display_links = ('link',)
   list_filter = ['category']
   search_fields = ['title', 'author']
   formfield_overrides = {
