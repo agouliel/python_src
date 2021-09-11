@@ -22,6 +22,7 @@ class CategAdmin(admin.ModelAdmin):
   }
 
 class LocationAdmin(admin.ModelAdmin):
+  list_display = ('ldescr', 'site')
   formfield_overrides = {
         models.TextField: {'widget': Textarea(attrs={'rows':2, 'cols':80})},
   }
