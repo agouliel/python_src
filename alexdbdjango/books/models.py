@@ -6,24 +6,39 @@ class Tblbookscateg(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'tblbookscateg'
+        db_table = 'tblbkcat'
         verbose_name = 'Category'
 
     def __str__(self):
         return self.cdescr
 
+class Tblbksites(models.Model):
+    sid = models.AutoField(primary_key=True) # this was wrong using inspectdb
+    sdescr = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'tblbksites'
+        verbose_name = 'Site'
+
+    def __str__(self):
+        return self.sdescr
 
 class Tblbookslocations(models.Model):
     lid = models.AutoField(primary_key=True) # this was wrong using inspectdb
     ldescr = models.TextField(blank=True, null=True)
+    site = models.ForeignKey(Tblbksites, on_delete=models.CASCADE, db_column='siteid')
 
     class Meta:
         managed = False
-        db_table = 'tblbookslocations'
+        db_table = 'tblbkloc'
         verbose_name = 'Location'
 
     def __str__(self):
         return self.ldescr
+
+    def get_site(self):
+        return self.site.sdescr
 
 class Tblbook(models.Model):
     bid = models.AutoField(primary_key=True) # this was wrong using inspectdb
@@ -43,8 +58,11 @@ class Tblbook(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'tblbook'
+        db_table = 'tblbk'
         verbose_name = 'Book'
 
     def __str__(self):
         return self.title
+
+    def get_site(self):
+        return self.location.get_site()

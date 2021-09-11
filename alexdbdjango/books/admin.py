@@ -2,10 +2,10 @@ from django.contrib import admin
 from django.forms import Textarea #TextInput
 from django.db import models
 
-from .models import Tblbook, Tblbookscateg, Tblbookslocations
+from .models import Tblbook, Tblbookscateg, Tblbookslocations, Tblbksites
 
 class BookAdmin(admin.ModelAdmin):
-  list_display = ('title', 'author', 'translator', 'publisher', 'location')
+  list_display = ('title', 'author', 'translator', 'publisher', 'location', 'get_site')
   #list_display = ('title', 'author', 'translator', 'publisher', 'location', 'link')
   #list_editable = ('title', 'author', 'translator', 'publisher')
   #list_display_links = ('link',)
@@ -26,6 +26,12 @@ class LocationAdmin(admin.ModelAdmin):
         models.TextField: {'widget': Textarea(attrs={'rows':2, 'cols':80})},
   }
 
+class SiteAdmin(admin.ModelAdmin):
+  formfield_overrides = {
+        models.TextField: {'widget': Textarea(attrs={'rows':2, 'cols':80})},
+  }
+
 admin.site.register(Tblbook, BookAdmin)
 admin.site.register(Tblbookscateg, CategAdmin)
 admin.site.register(Tblbookslocations, LocationAdmin)
+admin.site.register(Tblbksites, SiteAdmin)
