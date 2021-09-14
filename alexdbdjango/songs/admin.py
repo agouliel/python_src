@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from django.forms import Textarea #TextInput
 from django.db import models
 
