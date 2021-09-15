@@ -2,13 +2,15 @@ from django.contrib import admin
 from django.forms import Textarea #TextInput
 from django.db import models
 from django.http import HttpResponse
+from django.conf import settings
+import os
 
 from .models import Tblfiles
 
 class FileAdmin(admin.ModelAdmin):
   list_display = ('fname',)# 'fcontents')
   search_fields = ['fname']
-  actions = ["download_file",]
+  #actions = ["delete_permanently"]
   formfield_overrides = {
         #models.CharField: {'widget': TextInput(attrs={'size':'20'})},
         models.TextField: {'widget': Textarea(attrs={'rows':2, 'cols':80})},
@@ -22,5 +24,16 @@ class FileAdmin(admin.ModelAdmin):
     #response = HttpResponse(contents)
     #response['ContentDisposition']='attachment;filename=myfile'
     #return response
+
+  def delete_queryset(self, request, queryset):
+    for item in queryset:
+      file_path = os.path.join(settings.MEDIA_ROOT, str(item.fcontents))
+      os.remove(file_path)
+    queryset.delete()
+
+  def delete_model(self, request, obj):
+    file_path = os.path.join(settings.MEDIA_ROOT, str(obj.fcontents))
+    os.remove(file_path)
+    obj.delete()
 
 admin.site.register(Tblfiles, FileAdmin)
