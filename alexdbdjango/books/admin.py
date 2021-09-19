@@ -10,7 +10,7 @@ class BookAdmin(admin.ModelAdmin):
   #list_editable = ('title', 'author', 'translator', 'publisher')
   #list_display_links = ('link',)
   list_filter = ['category']
-  search_fields = ['title', 'author']
+  search_fields = ['title', 'title_en', 'author', 'publisher']
   formfield_overrides = {
         #models.CharField: {'widget': TextInput(attrs={'size':'20'})},
         models.TextField: {'widget': Textarea(attrs={'rows':2, 'cols':80})},
