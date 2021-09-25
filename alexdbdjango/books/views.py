@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import Tblbook, Tblbookscateg, Tblbookslocations
-from .forms import CategForm, LocForm, BookForm
+from .forms import CategForm, LocForm, BookFromLocForm, BookFromCatForm
 
 def index(request):
   return render(request, 'books/index.html')
@@ -57,9 +57,9 @@ def new_loc(request):
 def new_book_from_cat(request, cat_id):
   category = Tblbookscateg.objects.get(cid=cat_id)
   if request.method != 'POST':
-    form = BookForm()
+    form = BookFromCatForm()
   else:
-    form = BookForm(data=request.POST)
+    form = BookFromCatForm(data=request.POST)
     if form.is_valid():
       new_book_from_cat = form.save(commit=False)
       new_book_from_cat.category = category
@@ -71,9 +71,9 @@ def new_book_from_cat(request, cat_id):
 def new_book_from_loc(request, loc_id):
   location = Tblbookslocations.objects.get(lid=loc_id)
   if request.method != 'POST':
-    form = BookForm()
+    form = BookFromLocForm()
   else:
-    form = BookForm(data=request.POST)
+    form = BookFromLocForm(data=request.POST)
     if form.is_valid():
       new_book_from_loc = form.save(commit=False)
       new_book_from_loc.location = location
