@@ -1,0 +1,13 @@
+{% extends "books/base.html" %}
+
+{% block content %}
+<p><a href="{% url 'books:category' category.cid %}">{{ category }}</a></p>
+
+<p>Add a new book:</p>
+<form action="{% url 'books:new_book_from_cat' category.cid %}" method='post'>
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button name="submit">Add book</button>
+</form>
+
+{% endblock content %}
