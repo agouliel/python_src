@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import Tblbook, Tblbookscateg, Tblbookslocations
-from .forms import CategForm, LocForm, BookFromLocForm, BookFromCatForm
+from .models import Tblbook, Tblbookscateg, Tblbookslocations, Tblbksites
+from .forms import CategForm, LocForm, BookFromLocForm, BookFromCatForm, SiteForm, LocFromSiteForm
 
 def index(request):
   return render(request, 'books/index.html')
@@ -9,6 +9,8 @@ def books(request):
   books = Tblbook.objects.order_by('title')
   context = {'books': books}
   return render(request, 'books/books.html', context)
+
+################
 
 def categories(request):
   categories = Tblbookscateg.objects.order_by('cdescr')
@@ -32,6 +34,8 @@ def new_cat(request):
   context = {'form': form}
   return render(request, 'books/new_cat.html', context)
 
+################
+
 def locations(request):
   locations = Tblbookslocations.objects.order_by('ldescr')
   context = {'locations': locations}
@@ -53,6 +57,22 @@ def new_loc(request):
       return redirect('books:locations')
   context = {'form': form}
   return render(request, 'books/new_loc.html', context)
+
+def new_loc_from_site(request, site_id):
+  site = Tblbksites.objects.get(sid=site_id)
+  if request.method != 'POST':
+    form = LocFromSiteForm()
+  else:
+    form = LocFromSiteForm(data=request.POST)
+    if form.is_valid():
+      new_loc_from_site = form.save(commit=False)
+      new_loc_from_site.site = site
+      new_loc_from_site.save()
+      return redirect('books:site', site_id=site_id)
+  context = {'site': site, 'form': form}
+  return render(request, 'books/new_loc_from_site.html', context)
+
+################
 
 def new_book_from_cat(request, cat_id):
   category = Tblbookscateg.objects.get(cid=cat_id)
@@ -81,3 +101,29 @@ def new_book_from_loc(request, loc_id):
       return redirect('books:location', loc_id=loc_id)
   context = {'location': location, 'form': form}
   return render(request, 'books/new_book_from_loc.html', context)
+
+################
+
+def sites(request):
+  sites = Tblbksites.objects.order_by('sdescr')
+  context = {'sites': sites}
+  return render(request, 'books/sites.html', context)
+
+def site(request, site_id):
+  site = Tblbksites.objects.get(sid=site_id)
+  entries = site.tblbookslocations_set.order_by('ldescr')
+  context = {'site': site, 'entries': entries}
+  return render(request, 'books/site.html', context)
+
+def new_site(request):
+  if request.method != 'POST':
+    form = SiteForm()
+  else:
+    form = SiteForm(data=request.POST)
+    if form.is_valid():
+      form.save()
+      return redirect('books:sites')
+  context = {'form': form}
+  return render(request, 'books/new_site.html', context)
+
+################

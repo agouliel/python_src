@@ -1,0 +1,15 @@
+{% extends "books/base.html" %}
+
+{% block content %}
+<p>Site: {{ site }}</p>
+
+<p>Entries:</p>
+<p>
+  <a href="{% url 'books:new_loc_from_site' site.sid %}">Add new location</a>
+</p>
+<ul>
+  {% for location in entries %}
+    <li>{{ location.ldescr }}</li>
+  {% endfor %}
+</u>
+{% endblock content %}

@@ -1,0 +1,11 @@
+{% extends "books/base.html" %}
+
+{% block content %}
+<ul>
+  {% for site in sites %}
+    <li><a href="{% url 'books:site' site.sid %}">{{ site }}</a></li>
+  {% endfor %}
+</u>
+<br>
+<a href="{% url 'books:new_site' %}">Add a new site</a>
+{% endblock content %}
