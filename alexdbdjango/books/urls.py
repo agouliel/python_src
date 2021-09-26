@@ -23,4 +23,8 @@ urlpatterns = [
     path('sites/<int:site_id>', views.site, name='site'),
     path('new_site/', views.new_site, name='new_site'),
     path('new_loc/<int:site_id>', views.new_loc_from_site, name='new_loc_from_site'),
+
+    path('new_book/', views.new_book, name='new_book'),
+    path('edit_book/<int:book_id>', views.edit_book, name='edit_book'),
+    path('deleteurl/<int:pk>', views.DeleteMe.as_view(), name='deletemeview'),
 ]

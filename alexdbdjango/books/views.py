@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Tblbook, Tblbookscateg, Tblbookslocations, Tblbksites
-from .forms import CategForm, LocForm, BookFromLocForm, BookFromCatForm, SiteForm, LocFromSiteForm
+from .forms import CategForm, LocForm, BookFromLocForm, BookFromCatForm, SiteForm, LocFromSiteForm, BookForm
+from django.views.generic.edit import DeleteView
 
 def index(request):
   return render(request, 'books/index.html')
@@ -127,3 +128,32 @@ def new_site(request):
   return render(request, 'books/new_site.html', context)
 
 ################
+
+def new_book(request):
+  if request.method != 'POST':
+    form = BookForm()
+  else:
+    form = BookForm(data=request.POST)
+    if form.is_valid():
+      form.save()
+      return redirect('books:books')
+  context = {'form': form}
+  return render(request, 'books/new_book.html', context)
+
+def edit_book(request, book_id):
+  book = Tblbook.objects.get(bid=book_id)
+  if request.method != 'POST':
+    # pre-fill form with the current book
+    form = BookForm(instance=book)
+  else:
+    form = BookForm(instance=book, data=request.POST)
+    if form.is_valid():
+      form.save()
+      return redirect('books:books')
+  context = {'book': book, 'form': form}
+  return render(request, 'books/edit_book.html', context)
+
+class DeleteMe(DeleteView):
+    template_name = 'books/deleteconfirmation.html'
+    model = Tblbook
+    success_url = '/books/' # or reverse_lazy
