@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Tblbookscateg(models.Model):
     cid = models.AutoField(primary_key=True) # this was wrong using inspectdb
@@ -54,6 +55,8 @@ class Tblbook(models.Model):
 
     location = models.ForeignKey(Tblbookslocations, on_delete=models.CASCADE, db_column='locid')
     category = models.ForeignKey(Tblbookscateg, on_delete=models.CASCADE, db_column='catid')
+
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, db_column='owner')
 
     #link = "Edit"
 

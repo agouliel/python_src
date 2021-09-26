@@ -2,12 +2,15 @@ from django.shortcuts import render, redirect
 from .models import Tblbook, Tblbookscateg, Tblbookslocations, Tblbksites
 from .forms import CategForm, LocForm, BookFromLocForm, BookFromCatForm, SiteForm, LocFromSiteForm, BookForm
 from django.views.generic.edit import DeleteView
+from django.contrib.auth.decorators import login_required
+from django.http import Http404
 
 def index(request):
   return render(request, 'books/index.html')
 
+@login_required
 def books(request):
-  books = Tblbook.objects.order_by('title')
+  books = Tblbook.objects.filter(owner=request.user).order_by('title')
   context = {'books': books}
   return render(request, 'books/books.html', context)
 
@@ -20,7 +23,7 @@ def categories(request):
 
 def category(request, cat_id):
   category = Tblbookscateg.objects.get(cid=cat_id)
-  entries = category.tblbook_set.order_by('title')
+  entries = category.tblbook_set.filter(owner=request.user).order_by('title')
   context = {'category': category, 'entries': entries}
   return render(request, 'books/category.html', context)
 
@@ -44,7 +47,7 @@ def locations(request):
 
 def location(request, loc_id):
   location = Tblbookslocations.objects.get(lid=loc_id)
-  entries = location.tblbook_set.order_by('title')
+  entries = location.tblbook_set.filter(owner=request.user).order_by('title')
   context = {'location': location, 'entries': entries}
   return render(request, 'books/location.html', context)
 
@@ -84,6 +87,7 @@ def new_book_from_cat(request, cat_id):
     if form.is_valid():
       new_book_from_cat = form.save(commit=False)
       new_book_from_cat.category = category
+      new_book_from_cat.owner = request.user
       new_book_from_cat.save()
       return redirect('books:category', cat_id=cat_id)
   context = {'category': category, 'form': form}
@@ -98,6 +102,7 @@ def new_book_from_loc(request, loc_id):
     if form.is_valid():
       new_book_from_loc = form.save(commit=False)
       new_book_from_loc.location = location
+      new_book_from_loc.owner = request.user
       new_book_from_loc.save()
       return redirect('books:location', loc_id=loc_id)
   context = {'location': location, 'form': form}
@@ -135,13 +140,17 @@ def new_book(request):
   else:
     form = BookForm(data=request.POST)
     if form.is_valid():
-      form.save()
+      new_book = form.save(commit=False)
+      new_book.owner = request.user
+      new_book.save()
       return redirect('books:books')
   context = {'form': form}
   return render(request, 'books/new_book.html', context)
 
 def edit_book(request, book_id):
   book = Tblbook.objects.get(bid=book_id)
+  if book.owner != request.user:
+    raise Http404
   if request.method != 'POST':
     # pre-fill form with the current book
     form = BookForm(instance=book)
