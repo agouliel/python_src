@@ -1,0 +1,21 @@
+{% extends "books/base.html" %}
+
+{% block content %}
+{% if query %}
+  {% with results.count as total_results %}
+    Found {{ total_results }} result{{ total_results|pluralize }}:
+  {% endwith %}
+
+  {% for c in results %}
+    <br>    
+    {{c.title}}
+    {% empty %}
+    No results found.
+  {% endfor %}
+
+{% endif %}
+
+<form action="{% url 'books:books' %}" method="get">
+        <button type="submit">Back</button>
+</form>
+{% endblock content %}

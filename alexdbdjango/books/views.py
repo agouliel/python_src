@@ -4,6 +4,7 @@ from .forms import CategForm, LocForm, BookFromLocForm, BookFromCatForm, SiteFor
 from django.views.generic.edit import DeleteView
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
+from django.db.models import Q
 
 def index(request):
   return render(request, 'books/index.html')
@@ -166,3 +167,12 @@ class DeleteMe(DeleteView):
     template_name = 'books/deleteconfirmation.html'
     model = Tblbook
     success_url = '/books/' # or reverse_lazy
+
+def search(request):
+    results = []
+    if request.method == "GET":
+      query = request.GET.get('search')
+      if query == '':
+            query = 'None'
+      results = Tblbook.objects.filter(Q(title__icontains=query) | Q(author__icontains=query))
+    return render(request, 'books/search.html', {'query': query, 'results': results})
