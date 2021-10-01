@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -80,12 +81,23 @@ WSGI_APPLICATION = 'alexdbdjango.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
+arch = os.popen('arch').read()
+if arch.startswith('arm'): # Oracle doesn't support M1 Macs yet
+  DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': DB_DIR / 'alexdb.sqlite3',
     }
-}
+  }
+else:
+  DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.oracle',
+        'NAME': 'db202109301512_low',
+        'USER': 'ADMIN',
+        'PASSWORD': os.environ['ORCLPASS'],
+    }
+  }
 
 
 # Password validation

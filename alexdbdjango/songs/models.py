@@ -8,9 +8,10 @@ class Tblsongs(models.Model):
     album = models.TextField(db_column='Album', blank=True, null=True)
 
     class Meta:
-        managed = False
+        #managed = False
         db_table = 'tblsong'
         verbose_name = 'Song'
 
     def __str__(self):
         return self.title
+

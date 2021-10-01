@@ -6,7 +6,7 @@ class Tblbookscateg(models.Model):
     cdescr = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        #managed = False
         db_table = 'tblbkcat'
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
@@ -19,7 +19,7 @@ class Tblbksites(models.Model):
     sdescr = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        #managed = False
         db_table = 'tblbksites'
         verbose_name = 'Site'
 
@@ -32,7 +32,7 @@ class Tblbookslocations(models.Model):
     site = models.ForeignKey(Tblbksites, on_delete=models.CASCADE, db_column='siteid')
 
     class Meta:
-        managed = False
+        #managed = False
         db_table = 'tblbkloc'
         verbose_name = 'Location'
 
@@ -61,7 +61,7 @@ class Tblbook(models.Model):
     #link = "Edit"
 
     class Meta:
-        managed = False
+        #managed = False
         db_table = 'tblbk'
         verbose_name = 'Book'
 

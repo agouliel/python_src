@@ -13,9 +13,10 @@ class Tblfiles(models.Model):
     fcontents = models.FileField()
 
     class Meta:
-        managed = False
+        #managed = False
         db_table = 'tblfiles'
         verbose_name = 'File'
 
     def __str__(self):
         return self.fname
+
