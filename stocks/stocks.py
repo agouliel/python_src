@@ -1,4 +1,4 @@
-#!/Users/agou//python_virtual_env/stocks_env/bin/python
+#!/Users/Shared/src/python_src/stocks/.venv/bin/python
 
 # https://www.youtube.com/watch?v=PuZY9q-aKLw
 
