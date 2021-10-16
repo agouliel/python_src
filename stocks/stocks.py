@@ -1,9 +1,14 @@
-#!/Users/Shared/src/python_src/stocks/.venv/bin/python
+#!./.venv/bin/python
 
+# Predicting Stock Prices in Python
 # https://www.youtube.com/watch?v=PuZY9q-aKLw
+# https://github.com/apple/tensorflow_macos
 
 import pandas_datareader as web
 import datetime as dt
+#from sklearn.preprocessing import MinMaxScaler
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout, LSTM
 
 company = 'FB'
 start = dt.datetime(2012,1,1)
