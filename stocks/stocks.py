@@ -6,7 +6,7 @@
 
 import pandas_datareader as web
 import datetime as dt
-#from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, LSTM
 
@@ -17,9 +17,6 @@ data = web.DataReader(company, 'yahoo', start, end)
 print(data)
 
 """
-sklearn --> MinMaxScaler
-tensorflow --> Dense, Dropout, LSTM, Sequential
-
 scaler.fit_transform(data.reshape(-1,1))
 x_train --> x-60 : x
 y_train --> x (last day)
