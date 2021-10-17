@@ -1,5 +1,3 @@
-#!./.venv/bin/python
-
 # Predicting Stock Prices in Python
 # https://www.youtube.com/watch?v=PuZY9q-aKLw
 # https://github.com/apple/tensorflow_macos

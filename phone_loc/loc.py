@@ -1,3 +1,5 @@
+#!./.venv/bin/python
+
 # https://www.youtube.com/watch?v=Dz3rSZHnKkM
 
 import sys, os
