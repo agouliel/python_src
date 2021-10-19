@@ -1,3 +1,7 @@
+#!/Users/agou/miniforge3/envs/tf_env/bin/python
+# (or "/usr/bin/env python" if tf_env is active)
+
+
 # Predicting Stock Prices in Python
 # https://www.youtube.com/watch?v=PuZY9q-aKLw
 
@@ -28,6 +32,7 @@
 
 # RESULT:
 # 198.92548 or 187.45398 or 187.47852
+
 
 import numpy as np
 import pandas as pd
