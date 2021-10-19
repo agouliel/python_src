@@ -1,10 +1,33 @@
 # Predicting Stock Prices in Python
 # https://www.youtube.com/watch?v=PuZY9q-aKLw
 
-# Tensorflow couldn't be installed, so the below was used:
-# https://github.com/apple/tensorflow_macos
-# However, afterwards scikit couldn't be installed
-# Finally miniconda was used
+# HELPFUL LINKS:
+# https://towardsdatascience.com/installing-tensorflow-on-the-m1-mac-410bb36b776
+# https://github.com/apple/tensorflow_macos/issues/153
+# https://stackoverflow.com/questions/66060487/valueerror-numpy-ndarray-size-changed-may-indicate-binary-incompatibility-exp
+# If the build version used in <1.20, but the installed version is =>1.20, this will lead to an error.
+# https://github.com/scikit-learn-contrib/hdbscan/issues/457#issuecomment-773671043
+# Whenever those two versions, numpy==* and whatever is pinned, are binary incompatible – as they became suddenly when 1.20.0 got released – this can happen on the user's next build.
+# This is also why pinning numpy==1.20.0 will fix it. The installed numpy will be the same as your project builds against. Although, this is only by coincidence for as long as numpy==* continues to be binary compatible. If numpy==1.21.0 got released tomorrow with breaking changes, this would happen again on the next build.
+
+# ACTUAL STEPS:
+# 1. Install miniforge
+# 2. Download https://raw.githubusercontent.com/mwidjaja1/DSOnMacARM/main/environment.yml
+# 3. Change environment.yml to specify numpy 1.19
+# 4. conda env create --file=environment.yml --name tf_m1
+# 5. conda activate tf_m1
+# 6. pip install --upgrade --force --no-dependencies https://github.com/apple/tensorflow_macos/releases/download/v0.1alpha3/tensorflow_addons_macos-0.1a3-cp38-cp38-macosx_11_0_arm64.whl https://github.com/apple/tensorflow_macos/releases/download/v0.1alpha3/tensorflow_macos-0.1a3-cp38-cp38-macosx_11_0_arm64.whl
+# 7. conda install scikit-learn pandas pandas-datareader
+
+# WARNINGS:
+# tensorflow:AutoGraph could not transform <function Model.make_train_function.<locals>.train_function at 0x12c718040> and will run it as-is.
+# Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
+# Cause: unsupported operand type(s) for -: 'NoneType' and 'int'
+
+# tensorflow:Model was constructed with shape (None, 60, 1) for input KerasTensor(type_spec=TensorSpec(shape=(None, 60, 1), dtype=tf.float32, name='lstm_input'), name='lstm_input', description="created by layer 'lstm_input'"), but it was called on an input with incompatible shape (None, 59, 1).
+
+# RESULT:
+# 198.92548 or 187.45398 or 187.47852
 
 import numpy as np
 import pandas as pd
@@ -19,14 +42,23 @@ start = dt.datetime(2012,1,1)
 end = dt.datetime(2020,1,1)
 data = web.DataReader(company, 'yahoo', start, end)
 
-print("--------------- CLOSE ------------")
-print(data['Close'])
+#print("--------------- CLOSE ------------")
+#print(data['Close'])
+#2019-12-30    204.410004
+#2019-12-31    205.250000
 
 scaler = MinMaxScaler(feature_range=(0,1))
 scaled_data = scaler.fit_transform(data['Close'].values.reshape(-1,1))
 
-print("------------ SCALED --------------")
-print(scaled_data)
+#print("------------ SCALED --------------")
+#print(scaled_data)
+#[[0.10261801]
+# [0.08159383]
+# [0.06642639]
+# ...
+# [0.95294592]
+# [0.93447466]
+# [0.93867948]]
 
 prediction_days = 60
 
@@ -42,8 +74,23 @@ x_train = np.reshape(x_train, (x_train.shape[0], x_train.shape[1], 1)) # add one
 
 #x_train.shape: (1857, 60)
 
-print("------- AFTER RESHAPE ---------------------")
-print(x_train)
+#print("------- AFTER RESHAPE ---------------------")
+#print(x_train)
+#[[[0.10261801]
+#  [0.08159383]
+#  [0.06642639]
+#  ...
+#  [0.01641889]
+#  [0.02042349]
+#  [0.01937228]]
+
+# [[0.8145367 ]
+#  [0.81068225]
+#  [0.80102117]
+#  ...
+#  [0.95139407]
+#  [0.95294592]
+#  [0.93447466]]]
 
 model = Sequential()
 
@@ -87,4 +134,6 @@ real_data = np.reshape(real_data, (real_data.shape[0], real_data.shape[1], 1))
 
 prediction = model.predict(real_data)
 prediction = scaler.inverse_transform(prediction)
+
+print("------------ RESULT ---------------")
 print(prediction)
