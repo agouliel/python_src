@@ -1,4 +1,5 @@
 # https://github.com/googleworkspace/python-samples/tree/master/calendar/quickstart
+# pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
 
 from __future__ import print_function
 import datetime
@@ -7,7 +8,6 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
@@ -73,7 +73,8 @@ def main():
 
     for mykey in mysorteddict:
       if mysorteddict[mykey]:
-        print(mykey+';'+mysorteddict[mykey][1]+';'+str(mysorteddict[mykey][0]))
+        #print(mykey+';'+mysorteddict[mykey][1]+';'+str(mysorteddict[mykey][0]))
+        print(mykey, mysorteddict[mykey][1], str(mysorteddict[mykey][0]), sep=';')
       else:
         print(mykey+';'+';')
 
