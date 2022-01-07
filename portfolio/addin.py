@@ -60,11 +60,11 @@ def main():
 
   #wb.sheets[0].range('A1').value = 'Hello World!'
   #df = wb.sheets[0].range('A1').options(pd.DataFrame).value
-  #wb.sheets[0].range('B1').value = mylist
-  #wb.sheets[0].range('C1').value = [[1],[2],[3],[4],[5]] # column orientation
-  #wb.sheets[0].range('D1').value = [1, 2, 3, 4, 5] # row orientation
 
   mylist = wb.sheets[0].range('A1').expand('down').value # expand-down gets the whole column
-  #wb.sheets[0].range('D1').value = [item for item in mylist]
+
+  #wb.sheets[0].range('B1').value = [[item] for item in mylist] # column orientation
+  #wb.sheets[0].range('B1').value = mylist # row orientation
+
   df = pull_stock_data(mylist)
   wb.sheets[0].range('B1').options(index=False, header=False).value = df
