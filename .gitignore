@@ -9,3 +9,5 @@ python-getting-started/
 *_env/
 *_env*/
 .venv/
+*.db
+
