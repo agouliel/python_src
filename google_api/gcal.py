@@ -1,4 +1,7 @@
 # https://github.com/googleworkspace/python-samples/tree/master/calendar/quickstart
+# https://developers.google.com/calendar/api/quickstart/python
+# https://developers.google.com/workspace/guides/create-credentials
+# https://console.cloud.google.com/apis/credentials?project=agouliel-calendar
 # pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
 
 from __future__ import print_function
