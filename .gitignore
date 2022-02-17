@@ -10,4 +10,4 @@ python-getting-started/
 *_env*/
 .venv/
 *.db
-
+Pipfile*
