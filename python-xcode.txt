@@ -1,0 +1,11 @@
+https://ericasadun.com/2016/12/04/running-python-in-xcode-step-by-step/
+
+enter the path from Step 2 into the “Build Tool” line
+
+Xcode will not let you use the symbolic link at /usr/local/bin/python3
+
+It’s not a symbolic link but unfortunately Xcode continues to be fussy about allowing you to select it as your executable because of the period in its name.
+
+Create a hard link and then drag the link onto the dialog: ln python3.5 python35
+
+Click + under “Arguments Passed On Launch” and type $(SRCROOT)/ followed by the name of the Python file you created

@@ -1,0 +1,18 @@
+    import concurrent.futures
+  File "/opt/homebrew/Cellar/python@3.9/3.9.5/Frameworks/Python.framework/Versions/3.9/lib/python3.9/concurrent/futures/__init__.py", line 8, in <module>
+
+    from concurrent.futures._base import (FIRST_COMPLETED,
+  File "/opt/homebrew/Cellar/python@3.9/3.9.5/Frameworks/Python.framework/Versions/3.9/lib/python3.9/concurrent/futures/_base.py", line 7, in <module>
+
+    import logging
+  File "/opt/homebrew/Cellar/python@3.9/3.9.5/Frameworks/Python.framework/Versions/3.9/lib/python3.9/logging/__init__.py", line 42, in <module>
+
+    import threading
+  File "/Users/Shared/src/python/threading.py", line 2, in <module>
+
+    import requests
+  File "/opt/homebrew/lib/python3.9/site-packages/requests/__init__.py", line 43, in <module>
+
+    import urllib3
+  File "/opt/homebrew/lib/python3.9/site-packages/urllib3/__init__.py", line 9, in <module>
+    from logging import NullHandler
