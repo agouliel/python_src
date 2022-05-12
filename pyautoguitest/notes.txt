@@ -1,0 +1,3 @@
+https://automatetheboringstuff.com/2e/chapter20/
+https://inventwithpython.com/blog/2014/12/17/programming-a-bot-to-play-the-sushi-go-round-flash-game/
+Pillow might be needed for Image
