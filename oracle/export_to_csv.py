@@ -14,4 +14,4 @@ sql_query = pd.read_sql_query('''
                               ,conn)
 
 df = pd.DataFrame(sql_query)
-df.to_csv('data.csv', index = False)
+df.to_csv('data.csv', index=False, quoting=1)
