@@ -12,7 +12,7 @@ l = lib.Library("/Users/agou/Music/Library.xml")
 
 for id, song in l.songs.items():
     if song.comments:
-        print(str(id) + ';' + song.name + ';' + song.comments.replace('\n', ' ').replace('"',''))
+        print(str(id) + ';' + song.name + ';' + song.artist + ';' + song.comments.replace('\n', ' ').replace('"',''))
     else:
-        print(str(id) + ';' + song.name + ';')
+        print(str(id) + ';' + song.name + ';' + song.artist + ';')
         
