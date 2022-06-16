@@ -2,6 +2,8 @@
 # https://developers.google.com/calendar/api/quickstart/python
 # https://developers.google.com/workspace/guides/create-credentials
 # https://console.cloud.google.com/apis/credentials?project=agouliel-calendar
+# open the above link, click CREATE CREDENTIALS, choose OAuth, and download JSON
+# put this JSON into .venv/cred.json and delete .venv/token.json
 # pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
 
 from __future__ import print_function
