@@ -4,8 +4,75 @@ from six import PY2
 from six.moves.urllib import parse as urlparse
 import time
 
-from libpytunes.Song import Song
-from libpytunes.Playlist import Playlist
+from six import iteritems
+
+class Playlist:
+    is_folder = False
+    playlist_persistent_id = None
+    parent_persistent_id = None
+    distinguished_kind = None
+    playlist_id = None
+
+    def __init__(self, playListName=None):
+        self.name = playListName
+        self.tracks = []
+
+    def __iter__(self):
+        for attr, value in iteritems(self.__dict__):
+            yield attr, value
+
+    def ToDict(self):
+        return {key: value for (key, value) in self}
+
+class Song:
+    name = None
+    track_id = None
+    artist = None
+    album_artist = None
+    composer = None
+    album = None
+    genre = None
+    kind = None
+    size = None
+    total_time = None
+    track_number = None
+    track_count = None
+    disc_number = None
+    disc_count = None
+    year = None
+    date_modified = None
+    date_added = None
+    bit_rate = None
+    sample_rate = None
+    comments = None
+    rating = None
+    rating_computed = None
+    album_rating = None
+    play_count = None
+    skip_count = None
+    skip_date = None
+    location = None
+    location_escaped = None
+    compilation = None
+    grouping = None
+    lastplayed = None
+    length = None
+    persistent_id = None
+    album_rating_computed = None
+    work = None
+    movement_name = None
+    movement_number = None
+    movement_count = None
+    playlist_only = None
+    apple_music = None
+    protected = None
+
+    def __iter__(self):
+        for attr, value in iteritems(self.__dict__):
+            yield attr, value
+
+    def ToDict(self):
+        return {key: value for (key, value) in self}
 
 
 logger = logging.getLogger(__name__)
