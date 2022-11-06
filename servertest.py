@@ -11,10 +11,14 @@ serverPort = 8080
 class MyServer(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
-        self.send_header("Content-type", "text/html")
+        self.send_header('Content-type','text/html')
         self.end_headers()
 
-        self.wfile.write(response.content)
+        #https://stackoverflow.com/questions/18346583/how-do-i-map-incoming-path-requests-when-using-httpserver
+        if self.path == '/hello':
+          self.wfile.write(bytes("<b>Hello World</b>", 'utf-8'))
+        elif self.path == '/file':
+          self.wfile.write(response.content)
 
 if __name__ == "__main__":        
     webServer = HTTPServer((hostName, serverPort), MyServer)
