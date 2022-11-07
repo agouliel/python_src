@@ -1,33 +1,74 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-import time
-import requests
+from github import Github
+import os, shutil
 
-URL = "https://raw.githubusercontent.com/agouliel/yamdl_test/main/myapp/templates/myapp/test.html"
-response = requests.get(URL)
+PORT_NUMBER = 8080
 
-hostName = "localhost"
-serverPort = 8080
+#URL = "https://raw.githubusercontent.com/agouliel/yamdl_test/main/myapp/templates/myapp/test.html"
+#response = requests.get(URL)
 
-class MyServer(BaseHTTPRequestHandler):
+g = Github(os.environ['PYGITHUB'])
+
+attendance_repo = g.get_repo("ioniaman/AttendanceWeb")
+
+attendance_manual = attendance_repo.get_contents("manual/manual.html")
+try:
+    os.unlink(f'{attendance_manual.name}')
+except:
+    pass
+open(f'{attendance_manual.name}', 'xb').write(attendance_manual.decoded_content)
+
+attendance_images = attendance_repo.get_contents("manual/images")
+try:
+    shutil.rmtree('images')
+except:
+    pass
+os.mkdir('images')
+#os.chdir('images')
+for i in attendance_images:
+    open(f'images/{i.name}', 'xb').write(i.decoded_content)
+
+class myHandler(BaseHTTPRequestHandler):
+
+    # https://stackoverflow.com/questions/27693982/python-server-with-images
     def do_GET(self):
-        self.send_response(200)
-        self.send_header('Content-type','text/html')
-        self.end_headers()
 
         #https://stackoverflow.com/questions/18346583/how-do-i-map-incoming-path-requests-when-using-httpserver
         if self.path == '/hello':
-          self.wfile.write(bytes("<b>Hello World</b>", 'utf-8'))
-        elif self.path == '/file':
-          self.wfile.write(response.content)
+            #self.wfile.write(bytes("<b>Hello World</b>", 'utf-8'))
+            self.path = 'hello.html'
 
-if __name__ == "__main__":        
-    webServer = HTTPServer((hostName, serverPort), MyServer)
-    print("Server started http://%s:%s" % (hostName, serverPort))
+        if self.path=="/attendance":
+            self.path = f'{attendance_manual.name}'
 
-    try:
-        webServer.serve_forever()
-    except KeyboardInterrupt:
-        pass
+        try:
+            sendReply = False
+            if self.path.endswith(".html"):
+                mimetype='text/html'
+                sendReply = True
+            if self.path.endswith(".jpg") or self.path.endswith(".jpeg"):
+                mimetype='image/jpg'
+                sendReply = True
 
-    webServer.server_close()
-    print("Server stopped.")
+            if sendReply == True:
+                f = open(os.curdir+os.sep+self.path, 'rb')
+                self.send_response(200)
+                self.send_header('Content-type',mimetype)
+                self.end_headers()
+                self.wfile.write(f.read())
+                f.close()
+            return
+
+        except IOError:
+            self.send_error(404,'File Not Found: %s' % self.path)
+
+try:
+    server = HTTPServer(('', PORT_NUMBER), myHandler)
+    print('Started httpserver on port:' , PORT_NUMBER)
+    server.serve_forever()
+
+except KeyboardInterrupt:
+    print('Shutting down the web server')
+    os.unlink(f'{attendance_manual.name}')
+    shutil.rmtree('images')
+    server.socket.close()
