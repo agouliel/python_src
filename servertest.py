@@ -9,37 +9,35 @@ PORT_NUMBER = 8080
 
 g = Github(os.environ['PYGITHUB'])
 
-attendance_repo = g.get_repo("ioniaman/AttendanceWeb")
+def download_attendance_manual():
+    attendance_repo = g.get_repo("ioniaman/AttendanceWeb")
 
-attendance_manual = attendance_repo.get_contents("manual/manual.html")
-try:
-    os.unlink(f'{attendance_manual.name}')
-except:
-    pass
-open(f'{attendance_manual.name}', 'xb').write(attendance_manual.decoded_content)
+    attendance_manual = attendance_repo.get_contents("manual/manual.html")
+    try: os.unlink('attendance_manual.html')
+    except: pass
+    open('attendance_manual.html', 'xb').write(attendance_manual.decoded_content)
 
-attendance_images = attendance_repo.get_contents("manual/images")
-try:
-    shutil.rmtree('images')
-except:
-    pass
-os.mkdir('images')
-#os.chdir('images')
-for i in attendance_images:
-    open(f'images/{i.name}', 'xb').write(i.decoded_content)
+    attendance_images = attendance_repo.get_contents("manual/images")
+    try: shutil.rmtree('images')
+    except: pass
+    os.mkdir('images')
+    #os.chdir('images')
+    for i in attendance_images:
+        open(f'images/{i.name}', 'xb').write(i.decoded_content)
 
 class myHandler(BaseHTTPRequestHandler):
 
     # https://stackoverflow.com/questions/27693982/python-server-with-images
     def do_GET(self):
-
+        download_attendance_manual()
+        
         #https://stackoverflow.com/questions/18346583/how-do-i-map-incoming-path-requests-when-using-httpserver
         if self.path == '/hello':
             #self.wfile.write(bytes("<b>Hello World</b>", 'utf-8'))
             self.path = 'hello.html'
 
         if self.path=="/attendance":
-            self.path = f'{attendance_manual.name}'
+            self.path = 'attendance_manual.html'
 
         try:
             sendReply = False
@@ -64,11 +62,11 @@ class myHandler(BaseHTTPRequestHandler):
 
 try:
     server = HTTPServer(('', PORT_NUMBER), myHandler)
-    print('Started httpserver on port:' , PORT_NUMBER)
+    print('Started server on port:' , PORT_NUMBER)
     server.serve_forever()
 
 except KeyboardInterrupt:
-    print('Shutting down the web server')
-    os.unlink(f'{attendance_manual.name}')
+    print('Shutting down the server')
+    os.unlink('attendance_manual.html')
     shutil.rmtree('images')
     server.socket.close()
