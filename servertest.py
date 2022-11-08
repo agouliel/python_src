@@ -10,6 +10,33 @@ PORT_NUMBER = 8080
 
 g = Github(os.environ['PYGITHUB'])
 
+#####################################################################
+
+ops_manual_name = 'ops_manual.html'
+ops_images = 'ops_manual_images'
+
+def delete_ops_manual():
+  try:
+    os.unlink(ops_manual_name)
+    shutil.rmtree(ops_images)
+  except:
+    pass
+
+def download_ops_manual():
+    repo = g.get_repo('ioniaman/OperationsWeb')
+
+    delete_ops_manual()
+
+    manual = repo.get_contents('documentation/manual/manual.html')
+    open(ops_manual_name, 'xb').write(manual.decoded_content)
+
+    images = repo.get_contents('documentation/manual/images')
+    os.mkdir(ops_images)
+    for i in images:
+        open(f'{ops_images}/{i.name}', 'xb').write(i.decoded_content)
+
+#####################################################################
+
 def delete_attendance_manual():
   try:
     os.unlink('attendance_manual.html')
@@ -30,14 +57,17 @@ def download_attendance_manual():
     for i in attendance_images:
         open(f'images/{i.name}', 'xb').write(i.decoded_content)
 
+#####################################################################
+
 class myHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         download_attendance_manual()
+        download_ops_manual()
         
         #https://stackoverflow.com/questions/18346583/how-do-i-map-incoming-path-requests-when-using-httpserver
-        if self.path == '/hello':
+        if self.path == '/ops':
             #self.wfile.write(bytes("<b>Hello World</b>", 'utf-8'))
-            self.path = 'hello.html'
+            self.path = ops_manual_name
 
         if self.path=="/attendance":
             self.path = 'attendance_manual.html'
@@ -71,4 +101,5 @@ try:
 except KeyboardInterrupt:
     print('Shutting down the server')
     delete_attendance_manual()
+    delete_ops_manual()
     server.socket.close()
