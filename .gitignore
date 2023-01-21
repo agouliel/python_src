@@ -11,3 +11,5 @@ python-getting-started/
 *.db
 IntroToPython/
 Pipfile*
+*.sqlite
+
