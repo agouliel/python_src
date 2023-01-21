@@ -28,8 +28,12 @@ class User(db.Model):
             'email': self.email
         }
 
-
-db.create_all()
+#db.create_all()
+# The above doesn't work. We need the below:
+# flask --app editable_table shell
+# from editable_table import db
+# db.create_all()
+# (App: editable_table / Instance: ./instance)
 
 
 @app.route('/')
