@@ -1,0 +1,5 @@
+Flask
+requests
+pandas
+sqlalchemy
+pyodbc==4.0.34

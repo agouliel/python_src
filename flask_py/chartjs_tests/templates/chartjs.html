@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChartJS, Flask and SQL Server</title>
+</head>
+<body>
+<div style="position: relative; height:40vh; width:40vw">
+  <canvas id="line-chart"></canvas>
+  <select name="category" id="category" onchange="updateChart()">
+    <option value="" disabled selected>Select</option>
+  </select>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// Populate dropdown with db data
+var catOptions = "";
+catOptions += "<option value=\"All\">All</option>";
+{% for key in data %}
+  catOptions += "<option value=\"{{key}}\">{{key}}</option>";
+{% endfor %}
+document.getElementById("category").innerHTML = catOptions;
+</script>
+
+<script>
+const mylabels = [2020,2021,2022];
+
+var dbdata = {
+  labels: mylabels,
+  datasets: [
+        {% for key in data %}
+            {
+            label: '{{ key }}',
+            data: {{ data[key].SalesData }},
+            },
+        {% endfor %}
+  ]
+}
+
+var ctx = document.getElementById("line-chart");
+var myChart = new Chart(ctx, {
+  type: 'line',
+  data: dbdata
+});
+
+function updateChart() {
+  // show data only for the selection in the dropdown
+  selection = document.getElementById("category").value
+	myChart.destroy();
+
+  myobject = {}
+  for (val of dbdata.datasets) {
+    if (val['label'] == selection) { myobject = val }
+  }
+
+  var selected_data = {}
+  selected_data['labels'] = mylabels
+  selected_data['datasets'] = [myobject]
+
+  if (selection == 'All') {
+    myChart = new Chart(ctx, {
+		type: 'line',
+		data: dbdata
+	});
+  }
+  else {
+	myChart = new Chart(ctx, {
+		type: 'line',
+		data: selected_data
+	});
+  }
+};
+
+</script>
+
+</body>
+</html>

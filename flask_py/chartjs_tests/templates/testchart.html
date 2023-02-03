@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bar Chart</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+  </head>
+	<body>
+		<select name="chartType" id="chartType" onchange="updateChartType()">
+			<option value="bar">Bar</option>
+			<option value="line">Line</option>
+			<option value="pie">Pie</option>
+			<option value="radar">Radar</option>
+			<option value="polarArea">Polar Area</option>
+		</select>
+        <div class="chart-container" style="position: relative; width:80vw">
+            <canvas id="my_Chart"></canvas>
+        </div>
+		
+
+<script>
+
+// http://www.studyzone4u.com/post-details/chartjs-change-graph-type-based-on-dropdown-selection
+// https://www.youtube.com/watch?v=FAyDsmyVnPA - Dynamic Range Input
+
+			var myData = {
+				labels: ["Javascript", "Java", "Python"],
+				datasets: [{
+					label: "2021",
+					fill: false,
+					backgroundColor: ['#ff0000', '#ff4000', '#ff8000'],
+					borderColor: 'black',
+					data: [85,60,70],
+				},
+				{
+					label: "2022",
+					fill: false,
+					backgroundColor: ['#ff0000', '#ff4000', '#ff8000'],
+					borderColor: 'black',
+					data: [185,160,170],
+				}
+				]
+			};
+
+			var myData2 = {
+				labels: ["C"],
+				datasets: [{
+					label: "2021",
+					fill: false,
+					backgroundColor: ['#ff0000', '#ff4000', '#ff8000'],
+					borderColor: 'black',
+					data: [85],
+				},
+				{
+					label: "2022",
+					fill: false,
+					backgroundColor: ['#ff0000', '#ff4000', '#ff8000'],
+					borderColor: 'black',
+					data: [185],
+				}
+				]
+			};
+
+			var ctx = document.getElementById('my_Chart').getContext('2d');
+			var myChart = new Chart(ctx, {
+				type: 'bar',
+				data: myData
+			});
+			            
+			function updateChartType() {
+				myChart.destroy();
+				myChart = new Chart(ctx, {
+					type: document.getElementById("chartType").value,
+					data: myData2
+				});
+			};
+
+		</script>
+	</body>
+</html>

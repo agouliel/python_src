@@ -1,0 +1,41 @@
+<div>
+    <canvas id="myChart"></canvas>
+</div>
+  
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+<script>
+    const ctx = document.getElementById('myChart');
+  
+    new Chart(ctx, {
+      type: 'line',
+
+      data: {
+        labels: [2020, 2021, 2022, 2023],
+
+        datasets: [
+          {
+          label: 'Product A',
+          data: [12, 19, 22, 25],
+          borderWidth: 1
+          },
+          {
+          label: 'Product B',
+          data: [5, 7, 10],
+          borderWidth: 1
+          },
+        ]
+        
+      },
+
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+
+    });
+</script>
+  

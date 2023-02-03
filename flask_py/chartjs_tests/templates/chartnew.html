@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>ChartJS, Flask and SQL Server</title>
+</head>
+
+<body>
+<div style="position: relative; height:40vh; width:40vw">
+   <canvas id="line-chart"></canvas>
+   <input oninput="update(this)" type="range" id="start" min="2020" max="2022" value="2020">
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+var i = 0;
+
+const mylabels = [2020,2021,2022];
+const datapoints = [
+  {% for key in data %}
+  {{ data[key].SalesData }}
+  {% endfor %}
+]
+
+new Chart(document.getElementById("line-chart"), {
+  type: 'line',
+  data: {
+    labels: mylabels,
+    datasets: [
+      {% for key in data %}
+            {
+            data: {{ data[key].SalesData }},
+            labels: {{key}}
+            borderColor: 'rgba({{ range(1, 255) | random }}, {{ range(1, 255) | random }}, {{ range(1, 255) | random }})',
+            fill: false
+            },
+      {% endfor %}
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'Annual Sales Report',
+
+    }
+  }
+});
+
+</script>
+</body>
+
+</html>
