@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, url_for
 from flask_sqlalchemy import SQLAlchemy
-import base64
+from base64 import b64decode, b64encode
 
 app = Flask(__name__)
 
@@ -15,18 +15,19 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 class Employee(db.Model):
-    __tablename__ = 'new_employee'
+    __tablename__ = 'employee'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text)
-    photo = db.Column(db.BLOB) # https://stackoverflow.com/questions/29251431/python-flask-blob-image-sqlite-sqlalchemy-display-image
-    resume = db.Column(db.BLOB)
+    # https://stackoverflow.com/questions/29251431/python-flask-blob-image-sqlite-sqlalchemy-display-image
+    photo = db.Column(db.BLOB)
 
     def to_dict(self):
       if self.photo:
         return {
             'id': self.id,
             'name': self.name,
-            'photo': base64.b64encode(self.photo).decode("ascii")
+            # https://www.geeksforgeeks.org/encoding-and-decoding-base64-strings-in-python/
+            'photo': b64encode(self.photo).decode("ascii")
         }
       else:
         return {
@@ -38,9 +39,9 @@ class Employee(db.Model):
         for field in ['id', 'name']:
             if field in data:
                 setattr(self, field, data[field])
-        for field in ['photo', 'resume']:
+        for field in ['photo']:
             if field in data:
-                setattr(self, field, bytes(data[field], 'ascii'))
+                setattr(self, field, b64decode(data[field].encode('ascii')))
 
 @app.route('/employees')
 def get_employees():
