@@ -29,3 +29,4 @@ for row in record:
     writeTofile(row[0], photoPath)
 
 cursor.close()
+cnxn.close()

@@ -14,3 +14,5 @@ myquery = f"select * from Vessels"
 cursor.execute(myquery)
 row = cursor.fetchone()
 print(row)
+
+cnxn.close()
