@@ -1,7 +1,6 @@
 #!/Users/agou/miniforge3/envs/tf_env/bin/python
 # (or "/usr/bin/env python" if tf_env is active)
 
-
 # Predicting Stock Prices in Python
 # https://www.youtube.com/watch?v=PuZY9q-aKLw
 
@@ -18,34 +17,40 @@
 # 1. Install miniforge
 # 2. Download https://raw.githubusercontent.com/mwidjaja1/DSOnMacARM/main/environment.yml
 # 3. Change environment.yml to specify numpy 1.19
-# 4. conda env create --file=environment.yml --name tf_m1
-# 5. conda activate tf_m1
+# 4. conda env create --file=environment.yml --name tf_env
+# 5. conda activate tf_env
 # 6. pip install --upgrade --force --no-dependencies https://github.com/apple/tensorflow_macos/releases/download/v0.1alpha3/tensorflow_addons_macos-0.1a3-cp38-cp38-macosx_11_0_arm64.whl https://github.com/apple/tensorflow_macos/releases/download/v0.1alpha3/tensorflow_macos-0.1a3-cp38-cp38-macosx_11_0_arm64.whl
 # 7. conda install scikit-learn pandas pandas-datareader
+# 8. pip install yfinance # pandas-datareader is not working anymore
 
 # WARNINGS:
 # tensorflow:AutoGraph could not transform <function Model.make_train_function.<locals>.train_function at 0x12c718040> and will run it as-is.
 # Please report this to the TensorFlow team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output.
 # Cause: unsupported operand type(s) for -: 'NoneType' and 'int'
 
-# tensorflow:Model was constructed with shape (None, 60, 1) for input KerasTensor(type_spec=TensorSpec(shape=(None, 60, 1), dtype=tf.float32, name='lstm_input'), name='lstm_input', description="created by layer 'lstm_input'"), but it was called on an input with incompatible shape (None, 59, 1).
-
-# RESULT:
-# 198.92548 or 187.45398 or 187.47852
-
+# tensorflow:Model was constructed with shape (None, 60, 1) for input
+# KerasTensor(type_spec=TensorSpec(shape=(None, 60, 1), dtype=tf.float32, name='lstm_input'), name='lstm_input', description="created by layer 'lstm_input'")
+# but it was called on an input with incompatible shape (None, 59, 1).
 
 import numpy as np
 import pandas as pd
-import pandas_datareader as web
-import datetime as dt
+#import pandas_datareader as web
+#import datetime as dt
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, LSTM
+import yfinance as yf
 
-company = 'FB'
-start = dt.datetime(2012,1,1)
-end = dt.datetime(2020,1,1)
-data = web.DataReader(company, 'yahoo', start, end)
+company = 'AAPL' # FB is delisted
+
+start = '2012-01-01' #dt.datetime(2012,1,1)
+end = '2020-01-01'
+test_start = end
+test_end = '2023-10-01'
+
+#data = web.DataReader(company, 'yahoo', start, end)
+data = yf.download(company, start=start, end=end)
+
 
 #print("--------------- CLOSE ------------")
 #print(data['Close'])
@@ -110,9 +115,7 @@ model.add(Dense(units=1))
 model.compile(optimizer='adam', loss='mean_squared_error')
 model.fit(x_train, y_train, epochs=25, batch_size=32)
 
-test_start = dt.datetime(2020,1,1)
-test_end = dt.datetime.now()
-test_data = web.DataReader(company, 'yahoo', test_start, test_end)
+test_data = yf.download(company, start=test_start, end=test_end)
 actual_prices = test_data['Close'].values
 
 total_dataset = pd.concat((data['Close'], test_data['Close']), axis=0)
