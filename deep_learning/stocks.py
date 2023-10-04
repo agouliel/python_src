@@ -32,10 +32,11 @@
 # KerasTensor(type_spec=TensorSpec(shape=(None, 60, 1), dtype=tf.float32, name='lstm_input'), name='lstm_input', description="created by layer 'lstm_input'")
 # but it was called on an input with incompatible shape (None, 59, 1).
 
+# ALTERNATIVELY JUST USE PIP:
+# pip install tensorflow scikit-learn yfinance
+
 import numpy as np
 import pandas as pd
-#import pandas_datareader as web
-#import datetime as dt
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, LSTM
@@ -44,13 +45,13 @@ import yfinance as yf
 company = 'AAPL' # FB is delisted
 
 start = '2012-01-01' #dt.datetime(2012,1,1)
-end = '2020-01-01'
+end = '2023-01-01'
 test_start = end
 test_end = '2023-10-01'
 
 #data = web.DataReader(company, 'yahoo', start, end)
 data = yf.download(company, start=start, end=end)
-
+print('DOWNLOADED TRAINING DATA')
 
 #print("--------------- CLOSE ------------")
 #print(data['Close'])
@@ -113,9 +114,12 @@ model.add(Dropout(0.2))
 
 model.add(Dense(units=1))
 model.compile(optimizer='adam', loss='mean_squared_error')
+
 model.fit(x_train, y_train, epochs=25, batch_size=32)
+print('FIT ENDED')
 
 test_data = yf.download(company, start=test_start, end=test_end)
+print('DOWNLOADED TEST DATA')
 actual_prices = test_data['Close'].values
 
 total_dataset = pd.concat((data['Close'], test_data['Close']), axis=0)
@@ -133,6 +137,7 @@ x_test = np.array(x_test)
 x_test = np.reshape(x_test, (x_test.shape[0], x_test.shape[1], 1))
 
 predicted_prices = model.predict(x_test)
+print('PREDICT TEST FINISHED')
 predicted_prices = scaler.inverse_transform(predicted_prices)
 
 real_data = [model_inputs[len(model_inputs) + 1 - prediction_days:len(model_inputs+1), 0]]
@@ -141,7 +146,7 @@ real_data = np.array(real_data)
 real_data = np.reshape(real_data, (real_data.shape[0], real_data.shape[1], 1))
 
 prediction = model.predict(real_data)
+print('PREDICT REAL FINISHED')
 prediction = scaler.inverse_transform(prediction)
 
-print("------------ RESULT ---------------")
-print(prediction)
+print('RESULT: ', prediction[0][0])
