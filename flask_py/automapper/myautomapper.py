@@ -1,6 +1,6 @@
 import os
 from flask import Flask
-from sqlalchemy import create_engine, select, MetaData, inspect
+from sqlalchemy import create_engine, MetaData, inspect
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.automap import automap_base
 
@@ -20,12 +20,18 @@ session = Session()
 ### AUTOMAP & REFLECTION ###
 Base = automap_base()
 Base.prepare(autoload_with=engine)
+
+# reflection isn't actually needed, we can use inspection (see below)
 # https://docs.sqlalchemy.org/en/20/core/reflection.html#reflecting-database-objects
 metadata_obj = MetaData()
 metadata_obj.reflect(bind=engine)
 
 insp = inspect(engine)
 tables = insp.get_table_names()
+# the above can also be done by looping the classes:
+# tables = []
+# for c in Base.classes:
+#   tables.append(c.__name__)
 
 ##### MODELS #####
 for table in tables:
@@ -35,6 +41,9 @@ for table in tables:
     # https://stackoverflow.com/questions/24959589/get-table-columns-from-sqlalchemy-table-model
     #user_columns = [column.key for column in metadata_obj.tables['users'].c]
     globals()[f'{table}_columns'] = [column.key for column in metadata_obj.tables[table].c]
+    # the above can also be done by inspecting each class:
+    # users_insp = inspect(Base.classes.users)
+    # [column.key for column in users_insp.c]
 
 ##### ROUTES #####
 for table in tables:
