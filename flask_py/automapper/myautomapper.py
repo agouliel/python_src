@@ -1,6 +1,6 @@
 import os
 from flask import Flask
-from sqlalchemy import create_engine, MetaData, inspect
+from sqlalchemy import create_engine, inspect, select
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.automap import automap_base
 
@@ -17,14 +17,9 @@ engine = create_engine(conn_string)
 Session = sessionmaker(engine)
 session = Session()
 
-### AUTOMAP & REFLECTION ###
+### AUTOMAP & INSPECTION ###
 Base = automap_base()
 Base.prepare(autoload_with=engine)
-
-# reflection isn't actually needed, we can use inspection (see below)
-# https://docs.sqlalchemy.org/en/20/core/reflection.html#reflecting-database-objects
-metadata_obj = MetaData()
-metadata_obj.reflect(bind=engine)
 
 insp = inspect(engine)
 tables = insp.get_table_names()
@@ -38,20 +33,24 @@ for table in tables:
     #User = Base.classes.users
     globals()[table.title()] = getattr(Base.classes, table)
 
-    # https://stackoverflow.com/questions/24959589/get-table-columns-from-sqlalchemy-table-model
-    #user_columns = [column.key for column in metadata_obj.tables['users'].c]
-    globals()[f'{table}_columns'] = [column.key for column in metadata_obj.tables[table].c]
-    # the above can also be done by inspecting each class:
-    # users_insp = inspect(Base.classes.users)
-    # [column.key for column in users_insp.c]
-
 ##### ROUTES #####
 for table in tables:
     func_str = f"""def get_{table}():
     q = select({table.title()})
     query = session.execute(q)
-    return {{'data': [{{column:getattr(row[0],column) for column in {table}_columns}} for row in query],}}"""
-    #return {'data': [{'id':row[0].id,'username':row[0].username} for row in query],}
+    return {{'data': [{{column.key:getattr(row[0],column.key) for column in inspect(Base.classes.{table}).c}} for row in query],}}    
+    """
+    # simple case (use it as reference, in order to build the above):
+    #return {'data': [{'id':row[0].id, 'username':row[0].username, 'homeaddress':row[0].homeaddress} for row in query],}
+
+    # other way (using reflection instead of inspection):
+    # https://docs.sqlalchemy.org/en/20/core/reflection.html#reflecting-database-objects
+    #metadata_obj = MetaData()
+    #metadata_obj.reflect(bind=engine)
+    # https://stackoverflow.com/questions/24959589/get-table-columns-from-sqlalchemy-table-model
+    #return {{'data': [{{column.key:getattr(row[0],column.key) for column in metadata_obj.tables[{table}].c}} for row in query],}}
+
     exec(func_str)
+    
     url_str = f"app.add_url_rule('/{table}', view_func=get_{table})"
     exec(url_str)

@@ -11,6 +11,15 @@ cursor = cnxn.cursor()
 
 app = Flask(__name__)
 
+######## USING CURSOR DIRECTLY ##########
+#cursor.execute(stmt) / list1 = list(cursor)      / print(len(list1))
+#cursor.execute(stmt) / list2 = cursor.fetchall() / print(len(list2))
+
+######## USING A CURSOR VARIABLE ##########
+#result and cursor is the same: <pyodbc.Cursor object at 0x102d4cab0>
+#result = cursor.execute(stmt) / list3 = list(result)      / print(len(list3))
+#result = cursor.execute(stmt) / list4 = result.fetchall() / print(len(list4))
+
 stmt = "select name, object_id from sys.objects where [type] = 'U'"
 tables = cursor.execute(stmt)
 
