@@ -1,10 +1,6 @@
-import os, pyodbc
+import pyodbc
 from flask import Flask
-
-server = 'localhost'
-database = 'AlexDB'
-user = 'dataminer'
-passw = os.environ['SERVDBPASS']
+from db import server, database, user, passw
 
 cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=' + server + ';DATABASE=' + database + ';UID=' + user + ';PWD=' + passw)
 cursor = cnxn.cursor()

@@ -1,21 +1,9 @@
-import os
 from flask import Flask
-from sqlalchemy import create_engine, inspect, select
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import inspect, select
 from sqlalchemy.ext.automap import automap_base
-
-server = 'localhost'
-database = 'AlexDB'
-user = 'dataminer'
-passw = os.environ['SERVDBPASS']
-conn_string = f"mssql+pyodbc://{user}:{passw}@{server}/{database}?driver=ODBC+Driver+17+for+SQL+Server"
+from db import engine, session
 
 app = Flask(__name__)
-
-### DB ENGINE & SESSION ###
-engine = create_engine(conn_string)
-Session = sessionmaker(engine)
-session = Session()
 
 ### AUTOMAP & INSPECTION ###
 Base = automap_base()
@@ -54,3 +42,14 @@ for table in tables:
     
     url_str = f"app.add_url_rule('/{table}', view_func=get_{table})"
     exec(url_str)
+
+### ADD ANOTHER ROUTE WITH AN ADDITIONAL CLASS METHOD ###
+def duplicate_username(cls):
+    return cls.username+cls.username # the possible calculations here are very limited
+Users.duplicate_username = classmethod(duplicate_username)
+
+@app.route('/users_duplicate_username')
+def get_users_duplicate_username():
+    q = select(Users.duplicate_username())
+    result = session.execute(q)
+    return {'data': [row[0] for row in result]}
