@@ -45,7 +45,7 @@ for table in tables:
 
 ### ADD ANOTHER ROUTE WITH AN ADDITIONAL CLASS METHOD ###
 def duplicate_username(cls):
-    return cls.username+cls.username # the possible calculations here are very limited
+    return cls.username + cls.username # the allowed calculations here are very limited
 Users.duplicate_username = classmethod(duplicate_username)
 
 @app.route('/users_duplicate_username')
@@ -53,3 +53,14 @@ def get_users_duplicate_username():
     q = select(Users.duplicate_username())
     result = session.execute(q)
     return {'data': [row[0] for row in result]}
+
+### SAME AS ABOVE BUT WITH NORMAL METHOD ###
+def id_and_username(self):
+    return str(self.id) + ' ' + self.username # here calculations are allowed normally
+Users.id_and_username = id_and_username
+
+@app.route('/users_id_and_username')
+def get_users_id_and_username():
+    q = select(Users)
+    result = session.execute(q)
+    return {'data': [row[0].id_and_username() for row in result]}
