@@ -12,4 +12,5 @@ python-getting-started/
 IntroToPython/
 Pipfile*
 *.sqlite
+*.sqlite3
 .env
