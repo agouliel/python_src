@@ -9,9 +9,11 @@ def chat_view(request):
         user_message = request.POST.get('message')
         bot_message = get_ai_response(user_message)
         Message.objects.create(user_message=user_message, bot_message=bot_message)
-    messages = Message.objects.all()
-    return render(request, 'chat.html', {'messages': messages})
-
+        messages = Message.objects.all()
+        return render(request, 'chat.html', {'messages': messages})
+    else:
+        Message.objects.all().delete()
+        return render(request, 'chat.html', {'messages': None})
 
 def get_ai_response(user_input: str) -> str:
     # Set up the API endpoint and headers
@@ -31,7 +33,7 @@ def get_ai_response(user_input: str) -> str:
     }
     response = requests.post(endpoint, headers=headers, json=data)
     response_data = response.json()
-    print(f'{response_data = }')
+    #print(f'{response_data = }')
     ai_message = response_data['choices'][0]['message']['content']
     return ai_message
 
