@@ -1,0 +1,14 @@
+https://medium.com/rahasak/build-rag-application-using-a-llm-running-on-local-computer-with-ollama-and-llamaindex-97703153db20
+	curl http://localhost:11434/api/generate -d '{"model":"llama3",
+	"prompt":"What is docker?", "stream":false}'
+
+https://docs.llamaindex.ai/en/stable/module_guides/models/llms/usage_custom/
+
+https://docs.llamaindex.ai/en/stable/api_reference/llms/ollama/
+	from llama_index.llms.ollama import Ollama
+	llm = Ollama(model="llama3")
+	response = llm.complete('What is the capital of Greece?')
+	print(response)
+
+https://www.reddit.com/r/ollama/comments/1app5v0/where_would_i_find_the_model_files_on_my_mac/
+	~/.ollama/models/
