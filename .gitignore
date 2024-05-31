@@ -14,3 +14,4 @@ Pipfile*
 *.sqlite
 *.sqlite3
 .env
+data*/
