@@ -4,3 +4,4 @@ python-dotenv
 beautifulsoup4
 faiss-cpu
 langchain-community
+unstructured
