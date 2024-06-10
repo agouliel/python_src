@@ -1,0 +1,14 @@
+https://lightning.ai/lightning-ai/studios/compare-llama-3-and-phi-3-using-rag
+
+CLI chat example:
+import os
+from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
+openai_api_key = os.environ.get('OPENAI_API_KEY')
+DATA_DIR = './data_programming'
+PERSIST_DIR = './index_programming'
+documents = SimpleDirectoryReader(DATA_DIR, filename_as_id=True).load_data() 
+index = VectorStoreIndex.from_documents(documents)
+index.storage_context.persist(persist_dir=PERSIST_DIR)
+chat_engine = index.as_chat_engine(verbose=True)
+chat_engine.chat('what is mlx-assistant?')
+chat_engine.chat('what did I ask you before?')
