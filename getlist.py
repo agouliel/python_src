@@ -33,7 +33,15 @@ url1 = f"https://accounts.accesscontrol.windows.net/{tenant_id}/tokens/OAuth/2"
 r1 = requests.post(url1, data=data1, headers=headers1)
 json_data = json.loads(r1.text)
 
-#print(json_data)
+print(json_data)
+
+#{'error': 'invalid_client','error_description': "AADSTS7000222: The provided client secret keys for
+#app '442e3155-f174-4f40-8d18-1b02baef7eec' are expired. Visit the Azure portal to create new keys for your app:
+#https://aka.ms/NewClientSecret, or consider using certificate credentials for added security: https://aka.ms/certCreds.
+#Trace ID: 6593dee3-92f4-451c-9f4e-f8b8da27a000 Correlation ID: b55a2d0d-f740-409d-a02b-ccefe6ee95b9
+#Timestamp: 2024-11-12 14:52:37Z", 'error_codes': [7000222], 'timestamp': '2024-11-12 14:52:37Z',
+#'trace_id': '6593dee3-92f4-451c-9f4e-f8b8da27a000', 'correlation_id': 'b55a2d0d-f740-409d-a02b-ccefe6ee95b9',
+#'error_uri': 'https://accounts.accesscontrol.windows.net/error?code=7000222'}
 
 #{'token_type': 'Bearer', 'expires_in': '86399', 'not_before': '1619609303', 'expires_on': '1619696003', 
 #'resource': '00000003-0000-0ff1-ce00-000000000000/ioniamangr.sharepoint.com@06b26b33-98e4-47d8-8731-23f49f477e8b', 'access_token': 'eyJ0...'
