@@ -24,21 +24,24 @@ def pmsa(cvp_rap, map_in, co, age, height, weight):
 data = []
 data.append(['CVP', 'MAP', 'CO', 'AGE', 'HEIGHT', 'WEIGHT', 'PMSA', 'PVR', 'EH', 'RVR', 'POWER', 'CPO']) # header
 
-wb = load_workbook('thanos.xlsx')
-ws = wb.worksheets[0]
-for xlrow in ws.iter_rows():
-  row = [cell.value for cell in xlrow]
-  if row[0] and row[0]!='CVP': # exclude empty rows and header rows
-    cvp = float(row[0])
-    map_file = float(row[1])
-    co = float(row[2])
-    age = float(row[3])
-    height = float(row[4])
-    weight = float(row[5])
-    result = pmsa(cvp, map_file, co, age, height, weight)
-    #print(cvp, '\t', map_file, '\t', co, '\t', age, '\t', height, '\t', weight, '\t', result[0], '\t', result[1], '\t', result[2])
-    data.append([cvp, map_file, co, age, height, weight, result[0], result[1], result[2], result[3], result[4], result[5]])
+try:
+  wb = load_workbook('thanos.xlsx')
+  ws = wb.worksheets[0]
+  for xlrow in ws.iter_rows():
+    row = [cell.value for cell in xlrow]
+    if row[0] and row[0]!='CVP': # exclude empty rows and header rows
+      cvp = float(row[0])
+      map_file = float(row[1])
+      co = float(row[2])
+      age = float(row[3])
+      height = float(row[4])
+      weight = float(row[5])
+      result = pmsa(cvp, map_file, co, age, height, weight)
+      #print(cvp, '\t', map_file, '\t', co, '\t', age, '\t', height, '\t', weight, '\t', result[0], '\t', result[1], '\t', result[2])
+      data.append([cvp, map_file, co, age, height, weight, result[0], result[1], result[2], result[3], result[4], result[5]])
 
-with open('thanos.csv', 'w', newline='') as csvfile:
+  with open('thanos.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
     writer.writerows(data)
+except:
+  pass
