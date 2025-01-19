@@ -1,0 +1,4 @@
+https://python.langchain.com/v0.1/docs/get_started/quickstart/
+
+https://www.hacksoft.io/blog/chatting-with-django-documentation-using-langchain-chroma-and-openai-apis
+
