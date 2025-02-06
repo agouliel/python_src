@@ -1,0 +1,5 @@
+langchain-community
+langchain-together
+youtube_transcript_api
+pytube
+
