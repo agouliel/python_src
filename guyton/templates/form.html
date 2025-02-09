@@ -1,6 +1,12 @@
 <!DOCTYPE html>
-
-{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guyton</title>
+</head>
+<body>
+<h1>Guyton Calculator</h1>
 <form method="post">
     CVP: <input type="text" name="cvp" /><br><br>
     MAP: <input type="text" name="map" /><br><br>
@@ -9,5 +15,16 @@
     Height: <input type="text" name="height" /><br><br>
     Weight: <input type="text" name="weight" /><br><br>
     <input type="submit" value="Submit">
+    <input type="reset"  value="RESET" style="color: red;"/>
 </form>
-{% endblock %}
+{% if calculation_success == True %}
+    <br/>
+    <p>Calculation for CVP={{cvp}}, MAP={{map}}, CO={{co}}, Age={{age}}, Height={{height}}, Weight={{weight}}:</p>
+    {% include 'result.html' %}
+{% endif %}
+{% if calculation_success == False %}
+    <br/>
+    <p>{{error}}</p>
+{% endif %}
+</body>
+</html>
