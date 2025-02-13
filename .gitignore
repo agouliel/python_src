@@ -14,3 +14,7 @@ Pipfile*
 *.sqlite3
 .env
 data*/
+results/
+*.arrow
+*.safetensors
+
