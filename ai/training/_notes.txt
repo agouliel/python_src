@@ -19,3 +19,17 @@ Saving the dataset (1/1 shards): 100%|█| 2640/2640 [00:00<00:00, 1463516.07 ex
 -------------------------------------------------------------------------------------------
 
 Training took 50 minutes on a Mac mini M4 16 GB.
+
+-------------------------------------------------------------------------------------------
+
+data (txt) --> HF dataset --> map(tokenizer) --> tokenized data --> map(group) --> final data (arrow)
+
+-------------------------------------------------------------------------------------------
+
+model + tokenizer (collator) + final data --> training -->
+
+1. results (checkpoints)
+
+2. new model (safetensors)	|
+				| --> generate
+3. new tokenizer		|
