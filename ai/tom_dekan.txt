@@ -1,0 +1,9 @@
+assistant
+https://tomdekan.com/articles/english-database-query
+
+chatgpt_clone
+https://tomdekan.com/articles/chatgpt-htmx-django
+
+training
+https://tomdekan.com/articles/gpt-macos
+
