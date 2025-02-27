@@ -7,3 +7,6 @@ https://tomdekan.com/articles/chatgpt-htmx-django
 training
 https://tomdekan.com/articles/gpt-macos
 
+django/search_test + django/suggest_test
+https://tomdekan.com/articles/ai-suggest
+(replicate)

@@ -9,8 +9,10 @@ data = response.text
 
 # Save to file
 with open('tiny_shakespeare.txt', 'w') as f:
-    f.write(data)
+    pass # f.write(data)
 
+with open('data.txt', 'r') as f: # attendance observations
+    data = f.read()
 
 # Load data into a Hugging Face Dataset
 raw_data = Dataset.from_dict({'text': [data]})

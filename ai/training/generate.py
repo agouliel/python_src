@@ -23,14 +23,14 @@ else:
 model.to(device)
 model.eval()
 
-def generate_text(prompt, max_length=100):
+def generate_text(prompt, max_length_in=1024):
     # Encode the prompt and generate attention_mask
     encoded = tokenizer(
         prompt,
         return_tensors='pt',
         padding=False,  # No padding needed for single inputs
         truncation=True,
-        max_length=512  # Adjust based on model's max input length
+        max_length=max_length_in  # Adjust based on model's max input length
     )
     input_ids = encoded['input_ids'].to(device)
     attention_mask = encoded['attention_mask'].to(device)
@@ -39,7 +39,7 @@ def generate_text(prompt, max_length=100):
         output = model.generate(
             input_ids=input_ids,
             attention_mask=attention_mask,  # Pass the attention_mask
-            max_length=max_length,
+            max_length=max_length_in,
             num_beams=5,
             no_repeat_ngram_size=2,
             early_stopping=True,
@@ -56,7 +56,7 @@ def main():
     args = parser.parse_args()
 
     if args.prompt:
-        print(f"Prompt: {args.prompt}")
+        #print(f"Prompt: {args.prompt}")
         print(generate_text(args.prompt)[len(args.prompt):], sep="")
     else:
         prompts = [
