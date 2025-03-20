@@ -1,0 +1,19 @@
+from tasks import add
+
+result = add.delay(4,4)
+result.id # '734348a5-806b-405b-98aa-812972caef9e'
+result.result # 8
+
+from celery.result import AsyncResult
+myresult = AsyncResult(result.id)
+myresult.result # 8
+
+But if you exit python and try the same (which is like doing a new request in Flask):
+AttributeError: 'DisabledBackend' object has no attribute '_get_task_meta_for'. Did you mean: 'get_task_meta_for'?
+
+The below does not work either:
+from tasks import add
+myresult = add.AsyncResult('734348a5-806b-405b-98aa-812972caef9e')
+myresult.result # empty
+
+The only way to work is like app2 is doing, using bind=True
