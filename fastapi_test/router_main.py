@@ -2,7 +2,9 @@ from fastapi import APIRouter, Request, Depends
 import json
 #from database import SessionLocal
 from dependencies import get_db
+from dependencies import get_async_db
 import service as TechnaminService
+import models as technamin_models
 
 router = APIRouter()
 
@@ -33,3 +35,32 @@ async def update(request: Request, db=Depends(get_db)):
     print('UPDATE', data)
     TechnaminService.update_bet(data, db)
     return {"success": True}
+
+@router.post('/update_async')
+async def update_async(request: Request, db=Depends(get_async_db)):
+    body = await request.body()
+    data = json.loads(body)
+    print('UPDATE async', data)
+    await TechnaminService.update_bet_async(data, db)
+    # without await, the above gives the following warning:
+    # RuntimeWarning: coroutine 'update_bet_async' was never awaited
+    # RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+    return {'success': True}
+
+@router.post('/select')
+async def select(request: Request, db=Depends(get_db)):
+    # Test using:
+    # curl http://127.0.0.1:8000/select -H "Content-Type: application/json" -d '{"ticket_id":"1"}'
+    body = await request.body()
+    data = json.loads(body)
+    # if we don't use async def and await, we get the below error:
+    # TypeError: the JSON object must be str, bytes or bytearray, not coroutine
+    ticket_id = data['ticket_id']
+
+    ticket = (
+        db.query(technamin_models.TechnaminBetJunk)
+        .filter(technamin_models.TechnaminBetJunk.ticket_id == ticket_id)
+        .first()
+    )
+    print(ticket)
+    return {'success': True}

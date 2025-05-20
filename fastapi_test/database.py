@@ -6,6 +6,7 @@ from sqlalchemy.orm import sessionmaker
 import os
 from dotenv import load_dotenv
 #import psycopg2
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 
 ECHO = False
 
@@ -34,7 +35,7 @@ db_base_url_withoutpass = ("postgresql://" + user + "@" + hostname + ":" + str(p
 db_url = db_base_url + db_schema_name
 db_url_withoutpass = db_base_url_withoutpass + db_schema_name
 
-print(f"Connecting to db: {db_url_withoutpass}")
+print(f"[database.py] Connecting to db: {db_url_withoutpass}")
 
 # Create database connection
 engine = create_engine(
@@ -47,6 +48,11 @@ engine = create_engine(
 )
 
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+
+# https://medium.com/@rameshkannanyt0078/managing-database-connections-in-fastapi-best-practices-6f8404364936
+DATABASE_URL = f"postgresql+asyncpg://{user}:{password}@{hostname}/{db_schema_name}"
+async_engine = create_async_engine(DATABASE_URL, echo=True)
+AsyncSessionLocal = sessionmaker(bind=async_engine, class_=AsyncSession, expire_on_commit=False)
 
 # Create Base class for all models
 class BaseWithRepr(object):
