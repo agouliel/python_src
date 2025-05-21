@@ -36,3 +36,13 @@ async def update_bet_async(data, db):
     ticket.payout_bets = int(data['bets'])
     await db.commit()
     return
+
+# https://fastapi.tiangolo.com/tutorial/body
+async def update_bet_async_with_pydantic(data, db):
+    ticket_id = data.ticket_id
+    q = select(technamin_models.TechnaminBetJunk).where(technamin_models.TechnaminBetJunk.ticket_id == ticket_id)
+    result = await db.execute(q)
+    ticket = result.scalars().first()
+    ticket.payout_bets = data.bets
+    await db.commit()
+    return

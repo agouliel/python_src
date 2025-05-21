@@ -10,6 +10,13 @@ from sqlalchemy import (
 import enums as technamin_enums
 from database import Base
 
+from pydantic import BaseModel
+
+# https://fastapi.tiangolo.com/tutorial/body
+class TechnaminBetJunkPydantic(BaseModel):
+    ticket_id: str
+    bets: int
+
 
 class TechnaminBetJunk(Base):
     __tablename__ = "technamin_bet_junk"
