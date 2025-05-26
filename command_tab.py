@@ -1,6 +1,9 @@
+#!/usr/bin/env python3
+
 # https://discussions.apple.com/thread/3690632
 # https://gist.github.com/nzaillian/622181
 # tab code 48
+# https://stackoverflow.com/questions/9522324/running-python-in-background-on-os-x
 
 import os, time, random
 
@@ -11,13 +14,18 @@ cmd_end = """key up command
 end tell'"""
 
 while True:
-    number_of_tabs = random.randint(1,6)
     cmd_current = cmd_start
+
+    # add random number of tab presses
+    number_of_tabs = random.randint(1,6)
     for i in range(1, number_of_tabs):
         cmd_current += 'keystroke tab\n'
+
     cmd_current += cmd_end
     #print(cmd_current)
     os.system(cmd_current)
-    number_of_seconds = random.randint(200, 500)
+
+    # sleep for a random duration between 1 and 3 minutes
+    number_of_seconds = random.randint(60, 180)
     time.sleep(number_of_seconds)
 

@@ -17,4 +17,5 @@ data*/
 results/
 *.arrow
 *.safetensors
+nohup.out
 
