@@ -5,7 +5,8 @@ from dependencies import get_db
 from dependencies import get_async_db
 import service as TechnaminService
 import models as technamin_models
-from sqlalchemy.future import select
+from sqlalchemy.future import select as select_future
+from sqlalchemy import select as select_normal
 
 router = APIRouter()
 
@@ -86,7 +87,8 @@ async def select_with_path_param(ticket_id, db=Depends(get_async_db)):
 
     # AttributeError: 'AsyncSession' object has no attribute 'query'
     # so we have to use select
-    q = select(technamin_models.TechnaminBetJunk).where(technamin_models.TechnaminBetJunk.ticket_id == ticket_id)
+    # (2.0 style querying)
+    q = select_future(technamin_models.TechnaminBetJunk).where(technamin_models.TechnaminBetJunk.ticket_id == ticket_id)
     
     # https://stackoverflow.com/questions/68360687/sqlalchemy-asyncio-orm-how-to-query-the-database
     # https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html
@@ -95,3 +97,15 @@ async def select_with_path_param(ticket_id, db=Depends(get_async_db)):
     ticket = result.scalars().first()
 
     return ticket.as_dict()
+
+@router.get('/select_with_stream')
+async def select_with_stream(session=Depends(get_async_db)):
+    # Test using:
+    # curl http://127.0.0.1:8000/select_with_stream
+
+    q = select_normal(technamin_models.Transactions)
+    
+    result = await session.stream(q)
+    transactions = [transaction async for transaction in result]
+    #print(transactions[0]) # TypeError: Object of type Decimal is not JSON serializable
+    return {'success': True}

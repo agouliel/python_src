@@ -2,10 +2,11 @@ from sqlalchemy import (
     Column,
     Float,
     DateTime,
-    #ForeignKey,
+    ForeignKey,
     Integer,
     String,
     Enum as SqlEnum,
+    Numeric,
 )
 import enums as technamin_enums
 from database import Base
@@ -47,3 +48,23 @@ class TechnaminBetJunk(Base):
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+# taken from finance/models.py
+class Transactions(Base):
+    __tablename__ = "transactions"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    product = Column(SqlEnum(technamin_enums.CASINO_PRODUCTS))
+    transaction_reason = Column(SqlEnum(technamin_enums.CASINO_TRANSACTION_REASONS))
+    amount = Column(Numeric(20, 2))
+    currency = Column(String)
+    amount_in_eur = Column(Numeric(20, 2))
+    balance_before = Column(Numeric(20, 2))
+    balance_after = Column(Numeric(20, 2))
+    virtual_sport_balance_before = Column(Numeric(20, 2))
+    virtual_sport_balance_after = Column(Numeric(20, 2))
+    virtual_casino_balance_before = Column(Numeric(20, 2))
+    virtual_casino_balance_after = Column(Numeric(20, 2))
+    datetime_created = Column(DateTime)
+    transaction_money_type = Column(SqlEnum(technamin_enums.TRANSACTION_MONEY_TYPE))
+    external_transaction_id = Column(String, nullable=True)
