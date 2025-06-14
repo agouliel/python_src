@@ -4,7 +4,9 @@
 from openpyxl import load_workbook
 import csv
 
-def pmsa(cvp_rap, map_in, co, age, height, weight, cvpb=0, mapb=0, cob=0):
+def pmsa(cvp_rap, map_in, co, age, height, weight, cvpb=0, mapb=0, cob=0,
+  sv=0, svr=0, svv=0, sap=0, dap=0, hr=0, ppv=0
+):
   a = 0.96
   b = 0.04
   c_nom = 0.96 * 0.038 * (94.17 + 0.193*age) # 0.96 is missing from the above link
@@ -26,9 +28,16 @@ def pmsa(cvp_rap, map_in, co, age, height, weight, cvpb=0, mapb=0, cob=0):
   else:
     epower = 0
     evol = 0
+  
+  cart = sv / (sap - dap) if (sap - dap) != 0 else 0
+  rart = map_in / (sv * hr) if (sv * hr) != 0 else 0
+  rven = svr * 0.038
+  ea = map_in / sv if sv != 0 else 0
+  eadyn = ppv / svv if svv != 0 else 0
 
   return (round(pmsa,2), round(pvr,2), round(eh,2), round(rvr,2), round(power,2), round(cpo,2),
     round(epower,2), round(evol,2),
+    round(cart,2), round(rart,2), round(rven,2), round(ea,2), round(eadyn,2),
   )
 
 data = []
