@@ -18,4 +18,8 @@ results/
 *.arrow
 *.safetensors
 nohup.out
+*.jpg
+*.jpeg
+*.png
+*.pdf
 
