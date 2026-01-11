@@ -113,11 +113,15 @@ async def select_with_stream(session=Depends(get_async_db)):
 
 # FastAPI book, page 79
 def user_dep(name: str, password: str):
-    # in the book it's: def user_dep(name: str = Params, password: str = Params)
-    # but it doesn't work
-    # test it like this: http://localhost:8000/user?name=alex&password=alex
-    return {'name': name, 'valid': True}
+    # in the book it's: def user_dep(name: str = Params, password: str = Params) but it doesn't work
+    valid = True if password else False
+    return {'name': name, 'valid': valid}
 
 @router.get('/user')
 def get_user(user: dict = Depends(user_dep)) -> dict:
+    # test it like this: http://localhost:8000/user?name=alex&password=alex
+    return user
+
+@router.get('/user2')
+def get_user2(user: user_dep = Depends()) -> dict: # dep function used as type
     return user

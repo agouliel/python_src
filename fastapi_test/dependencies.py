@@ -1,7 +1,7 @@
 from typing import Generator
-print('[dependencies.py] before SessionLocal imports')
+print('[dependencies.py] before database.SessionLocal import')
 from database import SessionLocal
-print('[dependencies.py] after SessionLocal imports')
+print('[dependencies.py] after database.SessionLocal import')
 from database import AsyncSessionLocal
 from sqlalchemy.orm import sessionmaker
 
