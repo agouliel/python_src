@@ -6,6 +6,9 @@
 [https://stackoverflow.com/questions/68360687/sqlalchemy-asyncio-orm-how-to-query-the-database]   
 [https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html]
 
+# Run
+`uvicorn main:app`
+
 # Test using:
 `curl -X POST http://127.0.0.1:8000/update -H "Content-Type: application/json" -d '{"ticket_id":"1","bets":"8"}'`   
 `curl http://127.0.0.1:8000/select_with_body -H "Content-Type: application/json" -d '{"ticket_id":"1"}'`   

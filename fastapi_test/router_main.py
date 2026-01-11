@@ -29,7 +29,8 @@ async def update(request: Request, db=Depends(get_db)):
     
     # https://stackoverflow.com/questions/77696337/a-formdata-field-called-local-kw-is-added-automatically-as-a-mandatory-argument
     # If we use Depends(SessionLocal):
-    # SessionLocal expects local_kw as an optional parameter. And FastAPI is trying to get the value for this parameter from Query parameters.
+    # SessionLocal expects local_kw as an optional parameter.
+    # And FastAPI is trying to get the value for this parameter from Query parameters.
     # To avoid this, you can create a function and use this new function as a dependency.
     # https://fastapi.tiangolo.com/tutorial/query-params/
     # When you declare other function parameters that are not part of the path parameters,
@@ -109,3 +110,14 @@ async def select_with_stream(session=Depends(get_async_db)):
     transactions = [transaction async for transaction in result]
     #print(transactions[0]) # TypeError: Object of type Decimal is not JSON serializable
     return {'success': True}
+
+# FastAPI book, page 79
+def user_dep(name: str, password: str):
+    # in the book it's: def user_dep(name: str = Params, password: str = Params)
+    # but it doesn't work
+    # test it like this: http://localhost:8000/user?name=alex&password=alex
+    return {'name': name, 'valid': True}
+
+@router.get('/user')
+def get_user(user: dict = Depends(user_dep)) -> dict:
+    return user
