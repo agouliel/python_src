@@ -1,3 +1,4 @@
+# Python - Eisagwgh stous Ypologistes
 import socket as s
 
 serverPort = 10000

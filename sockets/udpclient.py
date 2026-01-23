@@ -1,10 +1,10 @@
+# Python - Eisagwgh stous Ypologistes
 import socket as s
 
 serverName = '127.0.0.1'
 serverPort = 10000
 
 clientSocket = s.socket(s.AF_INET, s.SOCK_DGRAM)
-#clientSocket.connect((serverName, serverPort))
 
 message = 'test'
 
