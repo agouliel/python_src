@@ -1,4 +1,5 @@
 # Python - Eisagwgh stous Ypologistes
+# or we can use: nc localhost 10000 (taken from Python Distilled)
 import socket as s
 
 serverName = '127.0.0.1'
