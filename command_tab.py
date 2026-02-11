@@ -5,6 +5,9 @@
 # tab code 48
 # https://stackoverflow.com/questions/9522324/running-python-in-background-on-os-x
 
+# the below uses AppleScript, which is Mac-only
+# a cross-platform version can be found in pyautoguitest/alt_tab.py (uses pyautogui)
+
 import os, time, random
 
 cmd_start = """osascript -e 'tell application "System Events"
@@ -28,4 +31,3 @@ while True:
     # sleep for a random duration between 1 and 3 minutes
     number_of_seconds = random.randint(60, 180)
     time.sleep(number_of_seconds)
-

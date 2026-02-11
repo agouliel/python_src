@@ -1,7 +1,8 @@
+# this works for Mac too (pyautogui is cross-platform)
+# but a dedicated Mac version can be found in command_tab.py (uses osascript - AppleScript)
 import os, time, random, pyautogui
 
 modifier_key = 'command' if os.name == 'posix' else 'alt' # windows --> 'nt'
-
 
 while True:
     pyautogui.keyDown(modifier_key)
