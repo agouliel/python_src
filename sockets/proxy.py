@@ -59,7 +59,13 @@ while 1:
   print('Sent the client request to the destination')
 
   # receive data from the destination web server
-  data = sock.recv(20000) # 20kb
+  parts = []
+  while True: # taken from Python Distilled p.286
+    part = sock.recv(10000) # 10kb
+    if not part:
+        break
+    parts.append(part)
+  data = b''.join(parts)
   clientSocket.send(data) # send to browser/client
   print('Sent response of the destination to the client')
 
