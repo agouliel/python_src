@@ -3,6 +3,7 @@
 import socket as s
 import signal
 import sys
+from connect_to_site import connect
 
 serverPort = 10000
 
@@ -53,19 +54,8 @@ while 1:
   print('Received client request for destination:', webserver, port)
   
   # send the request to the destination
-  sock = s.socket(s.AF_INET, s.SOCK_STREAM) 
-  sock.connect((webserver, port))
-  sock.sendall(request)
-  print('Sent the client request to the destination')
+  data = connect(webserver, port)
 
-  # receive data from the destination web server
-  parts = []
-  while True: # taken from Python Distilled p.286
-    part = sock.recv(10000) # 10kb
-    if not part:
-        break
-    parts.append(part)
-  data = b''.join(parts)
   clientSocket.send(data) # send to browser/client
   print('Sent response of the destination to the client')
 
