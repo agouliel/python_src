@@ -3,6 +3,8 @@ from gcal import service
 
 # sample: 2021-11-29T13:31:42.108271Z - 'Z' indicates UTC time
 now = datetime.datetime.utcnow().isoformat() + 'Z'
+# a warning appears that says to use the below, but then we get a "Bad Request" error
+#now = datetime.datetime.now(datetime.UTC).isoformat() + 'Z'
 
 if len(sys.argv) > 1:
       month_start = sys.argv[1] + 'T00:00:00.000000Z'
@@ -21,6 +23,7 @@ events = events_result.get('items', [])
 mydict = {}
 
 for event in events:
+      print(event['summary'])
       if event['summary'].startswith('*'): # family expenses start with asterisk
         start = event['start'].get('dateTime', event['start'].get('date'))
         startdt = start[:10]
