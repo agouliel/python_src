@@ -10,8 +10,8 @@ from email.message import EmailMessage
 SCOPES = ["https://www.googleapis.com/auth/gmail.send"] # readonly
 
 creds = None
-token_file = 'token.json'
-cred_file = 'cred.json'
+token_file = '.venv/token_gmail.json'
+cred_file = '.venv/cred_gmail.json'
 
 if os.path.exists(token_file):
   creds = Credentials.from_authorized_user_file(token_file, SCOPES)

@@ -3,7 +3,7 @@
 # https://developers.google.com/workspace/guides/create-credentials
 # https://console.cloud.google.com/apis/credentials?project=agouliel-calendar
 # open the above link, click CREATE CREDENTIALS, choose OAuth, and download JSON
-# put this JSON into cred.json and delete token.json
+# put this JSON into .venv/cred.json (to not get committed) and delete .venv/token.json
 # pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
 
 from __future__ import print_function
@@ -16,8 +16,8 @@ from google.oauth2.credentials import Credentials
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
-token_file = 'token.json'
-cred_file = 'cred.json'
+token_file = '.venv/token.json'
+cred_file = '.venv/cred.json'
 creds = None
 
 # The file token.json stores the user's access and refresh tokens, and is

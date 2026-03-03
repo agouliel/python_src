@@ -22,6 +22,7 @@ events_result = service.events().list(calendarId='primary',
 events = events_result.get('items', [])
 
 totals_by_hashtag = defaultdict(float)
+grand_total = 0
 
 for event in events:
     parts = event.get("summary", "").split()
@@ -35,5 +36,7 @@ for event in events:
             amount = float(first_word)
             hashtag = parts[-1]
             totals_by_hashtag[hashtag] += amount
+            grand_total += amount
 
 print(dict(totals_by_hashtag))
+print('Total:', grand_total)
