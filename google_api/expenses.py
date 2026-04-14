@@ -4,17 +4,23 @@ from collections import defaultdict
 
 # sample: 2021-11-29T13:31:42.108271Z - 'Z' indicates UTC time
 now = datetime.datetime.utcnow().isoformat() + 'Z'
-# a wanring appears that says to use the below, but then we get a "Bad Request" error
+# a warning appears that says to use the below:
 #now = datetime.datetime.now(datetime.UTC).isoformat() + 'Z'
+# but then we get a "Bad Request" error
 
 if len(sys.argv) > 1:
       month_start = sys.argv[1] + 'T00:00:00.000000Z'
 else:
       month_start = datetime.datetime.today().date().replace(day=1).isoformat() + 'T00:00:00.000000Z'
 
+if len(sys.argv) > 2:
+      month_end = sys.argv[2] + 'T00:00:00.000000Z'
+else:
+      month_end = now
+
 events_result = service.events().list(calendarId='primary',
                                         timeMin=month_start,
-                                        timeMax=now,
+                                        timeMax=month_end,
                                         #maxResults=10, 
                                         singleEvents=True,
                                         orderBy='startTime').execute()
@@ -38,5 +44,7 @@ for event in events:
             totals_by_hashtag[hashtag] += amount
             grand_total += amount
 
-print(dict(totals_by_hashtag))
+sorted_dict = dict(sorted(totals_by_hashtag.items()))
+for k in sorted_dict:
+     print(k[1:]+'\t'+str(sorted_dict[k]))
 print('Total:', grand_total)
