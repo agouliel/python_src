@@ -1,5 +1,22 @@
 # this works for Mac too (pyautogui is cross-platform)
 # but a dedicated Mac version can be found in command_tab.py (uses osascript - AppleScript)
+
+# Installation:
+# a. copy the file "work.py" to the "work" folder on the desktop
+# b. Windows-R
+# c. cmd
+# d. cd desktop\work
+# e. python -m venv .venv
+# f. .venv\scripts\activate
+# g. pip install pyautogui
+
+# Run:
+# 1. Windows-R
+# 2. cmd
+# 3. cd desktop\work
+# 4. .venv\scripts\activate
+# 5. python work.py
+
 import os, time, random, pyautogui
 
 modifier_key = 'command' if os.name == 'posix' else 'alt' # windows --> 'nt'
