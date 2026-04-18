@@ -1,4 +1,4 @@
-import datetime, sys
+import datetime, sys, sqlite3, os
 from gcal import service
 from collections import defaultdict
 
@@ -21,7 +21,7 @@ else:
 events_result = service.events().list(calendarId='primary',
                                         timeMin=month_start,
                                         timeMax=month_end,
-                                        #maxResults=10, 
+                                        #maxResults=10,
                                         singleEvents=True,
                                         orderBy='startTime').execute()
 
@@ -48,3 +48,21 @@ sorted_dict = dict(sorted(totals_by_hashtag.items()))
 for k in sorted_dict:
      print(k[1:]+'\t'+str(sorted_dict[k]))
 print('Total:', grand_total)
+
+db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'expenses.db')
+date_from = month_start[:10]
+date_to = month_end[:10]
+with sqlite3.connect(db_path) as conn:
+    conn.execute('''CREATE TABLE IF NOT EXISTS expense_totals (
+        date_from TEXT,
+        date_to TEXT,
+        hashtag TEXT,
+        total REAL,
+        PRIMARY KEY (date_from, date_to, hashtag)
+    )''')
+    conn.executemany(
+        'INSERT OR REPLACE INTO expense_totals VALUES (?, ?, ?, ?)',
+        [(date_from, date_to, k[1:], v) for k, v in sorted_dict.items()]
+    )
+    conn.commit()
+print(f'Saved to {db_path}')
