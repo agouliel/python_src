@@ -1,5 +1,5 @@
 import datetime, sys, sqlite3, os
-from gcal import service
+from gcal import service as gcal_service
 from collections import defaultdict
 
 # sample: 2021-11-29T13:31:42.108271Z - 'Z' indicates UTC time
@@ -18,7 +18,18 @@ if len(sys.argv) > 2:
 else:
       month_end = now
 
-events_result = service.events().list(calendarId='primary',
+db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'expenses.db')
+with sqlite3.connect(db_path) as conn:
+    conn.execute('''CREATE TABLE IF NOT EXISTS expenses (
+        id TEXT,
+        date_start TEXT,
+        hashtag TEXT,
+        summary TEXT,
+        amount REAL,
+        PRIMARY KEY (id)
+    )''')
+
+events_result = gcal_service.events().list(calendarId='primary',
                                         timeMin=month_start,
                                         timeMax=month_end,
                                         #maxResults=10,
@@ -30,7 +41,19 @@ events = events_result.get('items', [])
 totals_by_hashtag = defaultdict(float)
 grand_total = 0
 
+events_with_expenses = []
+
 for event in events:
+    #{'kind': 'calendar#event', 'etag': '"3540035831135966"', 'id': '4k71ki9tgdh0ng4eqb0huspc07', 'status': 'confirmed',
+    # 'htmlLink': 'https://www.google.com/calendar/event?eid=NGs3MWtpOXRnZGgwbmc0ZXFiMGh1c3BjMDcgYWdvdWxpZWxAbQ',
+    # 'created': '2026-01-29T09:39:04.000Z', 'updated': '2026-02-02T07:38:35.567Z', 'summary': '30 cohen #drinks',
+    # 'creator': {'email': 'agouliel@gmail.com', 'self': True},
+    # 'organizer': {'email': 'agouliel@gmail.com', 'self': True},
+    # 'start': {'dateTime': '2026-01-30T09:00:00+02:00', 'timeZone': 'Europe/Athens'},
+    # 'end': {'dateTime': '2026-01-30T10:00:00+02:00', 'timeZone': 'Europe/Athens'},
+    # 'iCalUID': '4k71ki9tgdh0ng4eqb0huspc07@google.com', 'sequence': 0, 'reminders': {'useDefault': True},
+    # 'eventType': 'default'
+    #}
     parts = event.get("summary", "").split()
     
     # Check if we have enough parts and if the first part is numeric
@@ -44,25 +67,21 @@ for event in events:
             totals_by_hashtag[hashtag] += amount
             grand_total += amount
 
+            event_with_expense = (
+                event.get('id'),
+                event['start']['dateTime'][:10],
+                hashtag[1:],
+                ' '.join(parts[1:-1]), # summary
+                amount,
+            )
+            events_with_expenses.append(event_with_expense)
+
 sorted_dict = dict(sorted(totals_by_hashtag.items()))
 for k in sorted_dict:
      print(k[1:]+'\t'+str(sorted_dict[k]))
 print('Total:', grand_total)
 
-db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'expenses.db')
-date_from = month_start[:10]
-date_to = month_end[:10]
 with sqlite3.connect(db_path) as conn:
-    conn.execute('''CREATE TABLE IF NOT EXISTS expense_totals (
-        date_from TEXT,
-        date_to TEXT,
-        hashtag TEXT,
-        total REAL,
-        PRIMARY KEY (date_from, date_to, hashtag)
-    )''')
-    conn.executemany(
-        'INSERT OR REPLACE INTO expense_totals VALUES (?, ?, ?, ?)',
-        [(date_from, date_to, k[1:], v) for k, v in sorted_dict.items()]
-    )
+    conn.executemany('INSERT OR REPLACE INTO expenses VALUES (?, ?, ?, ?, ?)', events_with_expenses)
     conn.commit()
 print(f'Saved to {db_path}')

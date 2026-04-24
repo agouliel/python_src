@@ -8,22 +8,24 @@ db_path = os.path.join(os.path.dirname(__file__), '..', 'google_api', 'expenses.
 st.title('Expenses')
 
 with sqlite3.connect(db_path) as conn:
-    df = pd.read_sql('SELECT * FROM expense_totals', conn)
+    df = pd.read_sql('SELECT * FROM expenses', conn)
 
 if df.empty:
     st.info('No data found.')
     st.stop()
 
-df['month'] = pd.to_datetime(df['date_from']).dt.to_period('M').astype(str)
+df['month'] = pd.to_datetime(df['date_start']).dt.to_period('M').astype(str)
 
 months = sorted(df['month'].unique(), reverse=True)
 selected = st.selectbox('Month', months)
 
-filtered = df[df['month'] == selected][['hashtag', 'total']].sort_values('hashtag')
+filtered = df[df['month'] == selected]
 
-st.bar_chart(filtered.set_index('hashtag')['total'])
+totals = filtered.groupby('hashtag', as_index=False)['amount'].sum().sort_values('hashtag')
 
-st.dataframe(filtered.reset_index(drop=True), use_container_width=True)
+#st.bar_chart(totals.set_index('hashtag')['amount'])
 
-grand_total = filtered['total'].sum()
+st.dataframe(totals.reset_index(drop=True), use_container_width=True)
+
+grand_total = totals['amount'].sum()
 st.metric('Total', f'{grand_total:,.2f}')
