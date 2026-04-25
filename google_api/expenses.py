@@ -1,4 +1,5 @@
 import datetime, sys, sqlite3, os
+import psycopg2
 from gcal import service as gcal_service
 from collections import defaultdict
 
@@ -85,3 +86,22 @@ with sqlite3.connect(db_path) as conn:
     conn.executemany('INSERT OR REPLACE INTO expenses VALUES (?, ?, ?, ?, ?)', events_with_expenses)
     conn.commit()
 print(f'Saved to {db_path}')
+
+pg_host = os.environ.get('PGHOST')
+if pg_host:
+    pg_conn = psycopg2.connect(
+        host=pg_host,
+        port=os.environ.get('PGPORT', 5432),
+        dbname=os.environ.get('PGDATABASE'),
+        user=os.environ.get('PGUSER'),
+        password=os.environ.get('PGPASSWORD'),
+    )
+with pg_conn:
+    with pg_conn.cursor() as cur:
+        cur.executemany(
+            '''INSERT INTO expenses (id, date_start, hashtag, summary, amount, url) VALUES (%s, %s, %s, %s, %s, %s)
+                ON CONFLICT (id) DO UPDATE SET
+                    date_start = EXCLUDED.date_start, hashtag = EXCLUDED.hashtag,
+                    summary = EXCLUDED.summary, amount = EXCLUDED.amount, url = EXCLUDED.url''',
+            events_with_expenses
+        )
