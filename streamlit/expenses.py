@@ -1,14 +1,22 @@
 import streamlit as st
 import pandas as pd
-import sqlite3
+import psycopg2 # sqlite3
 import os
 
-db_path = os.path.join(os.path.dirname(__file__), '..', 'google_api', 'expenses.db')
+#db_path = os.path.join(os.path.dirname(__file__), '..', 'google_api', 'expenses.db')
 
 st.title('Expenses')
 
-with sqlite3.connect(db_path) as conn:
-    df = pd.read_sql('SELECT * FROM expenses', conn)
+pg_conn = psycopg2.connect(
+    host=os.environ.get('PGHOST'),
+    port=os.environ.get('PGPORT', 5432),
+    dbname=os.environ.get('PGDATABASE', 'expenses'),
+    user=os.environ.get('PGUSER'),
+    password=os.environ.get('PGPASSWORD'),
+)
+
+with pg_conn as conn:
+    df = pd.read_sql('SELECT date_start, hashtag, summary, amount, url FROM tbl_expenses', conn)
 
 if df.empty:
     st.info('No data found.')
@@ -79,7 +87,7 @@ with col_detail:
                 st.write('No expenses.')
             else:
                 for _, row in items.iterrows():
-                    st.write(f"**{row['date_start'].strftime('%d')}** {row['summary']} — {row['amount']:,.2f}")
+                    st.markdown(f"[**{row['date_start'].strftime('%d')}** {row['summary']} — {row['amount']:,.2f}]({row['url']})")
     else:
         st.caption('Click a cell to see details.')
 

@@ -27,6 +27,7 @@ with sqlite3.connect(db_path) as conn:
         hashtag TEXT,
         summary TEXT,
         amount REAL,
+        url TEXT,
         PRIMARY KEY (id)
     )''')
 
@@ -74,6 +75,7 @@ for event in events:
                 hashtag[1:],
                 ' '.join(parts[1:-1]), # summary
                 amount,
+                event.get('htmlLink')
             )
             events_with_expenses.append(event_with_expense)
 
@@ -83,7 +85,7 @@ for k in sorted_dict:
 print('Total:', grand_total)
 
 with sqlite3.connect(db_path) as conn:
-    conn.executemany('INSERT OR REPLACE INTO expenses VALUES (?, ?, ?, ?, ?)', events_with_expenses)
+    conn.executemany('INSERT OR REPLACE INTO expenses VALUES (?, ?, ?, ?, ?, ?)', events_with_expenses)
     conn.commit()
 print(f'Saved to {db_path}')
 
@@ -92,16 +94,17 @@ if pg_host:
     pg_conn = psycopg2.connect(
         host=pg_host,
         port=os.environ.get('PGPORT', 5432),
-        dbname=os.environ.get('PGDATABASE'),
+        dbname=os.environ.get('PGDATABASE', 'expenses'),
         user=os.environ.get('PGUSER'),
         password=os.environ.get('PGPASSWORD'),
     )
 with pg_conn:
     with pg_conn.cursor() as cur:
         cur.executemany(
-            '''INSERT INTO expenses (id, date_start, hashtag, summary, amount, url) VALUES (%s, %s, %s, %s, %s, %s)
-                ON CONFLICT (id) DO UPDATE SET
-                    date_start = EXCLUDED.date_start, hashtag = EXCLUDED.hashtag,
-                    summary = EXCLUDED.summary, amount = EXCLUDED.amount, url = EXCLUDED.url''',
+            '''
+            INSERT INTO tbl_expenses (id, date_start, hashtag, summary, amount, url) VALUES (%s, %s, %s, %s, %s, %s)
+            ON CONFLICT (id) DO UPDATE SET (date_start, hashtag, summary, amount, url) =
+            (EXCLUDED.date_start, EXCLUDED.hashtag, EXCLUDED.summary, EXCLUDED.amount, EXCLUDED.url)
+            ''',
             events_with_expenses
         )
