@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import psycopg2 # sqlite3
 import os
+import subprocess
 
 #db_path = os.path.join(os.path.dirname(__file__), '..', 'google_api', 'expenses.db')
 
@@ -28,6 +29,15 @@ df['month'] = df['date_start'].dt.month
 
 years = sorted(df['year'].unique(), reverse=True)
 selected_year = st.sidebar.selectbox('Year', years)
+
+if st.sidebar.button('Sync'):
+    script = os.path.join(os.path.dirname(__file__), '..', 'google_api', 'expenses.py')
+    result = subprocess.run(['python', script], capture_output=True, text=True)
+    if result.returncode == 0:
+        st.sidebar.success('Sync complete')
+        st.rerun()
+    else:
+        st.sidebar.error(result.stderr or 'Sync failed')
 
 filtered = df[df['year'] == selected_year]
 
