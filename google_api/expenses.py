@@ -4,20 +4,18 @@ from gcal import service as gcal_service
 from collections import defaultdict
 
 # sample: 2021-11-29T13:31:42.108271Z - 'Z' indicates UTC time
-now = datetime.datetime.utcnow().isoformat() + 'Z'
-# a warning appears that says to use the below:
-#now = datetime.datetime.now(datetime.UTC).isoformat() + 'Z'
-# but then we get a "Bad Request" error
+
+time_suffix = 'T00:00:00.000000Z'
 
 if len(sys.argv) > 1:
-      month_start = sys.argv[1] + 'T00:00:00.000000Z'
+      month_start = sys.argv[1] + time_suffix
 else:
-      month_start = datetime.datetime.today().date().replace(day=1).isoformat() + 'T00:00:00.000000Z'
+      month_start = datetime.datetime.today().date().replace(day=1).isoformat() + time_suffix
 
 if len(sys.argv) > 2:
-      month_end = sys.argv[2] + 'T00:00:00.000000Z'
+      month_end = sys.argv[2] + time_suffix
 else:
-      month_end = now
+      month_end = datetime.datetime.today().date().isoformat() + time_suffix
 
 db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'expenses.db')
 with sqlite3.connect(db_path) as conn:
@@ -39,6 +37,7 @@ events_result = gcal_service.events().list(calendarId='primary',
                                         orderBy='startTime').execute()
 
 events = events_result.get('items', [])
+print(events)
 
 totals_by_hashtag = defaultdict(float)
 grand_total = 0
@@ -61,9 +60,10 @@ for event in events:
     # Check if we have enough parts and if the first part is numeric
     if parts:
         first_word = parts[0]
+        last_word = parts[-1]
         
         # This check handles both integers and decimals
-        if first_word.replace('.', '', 1).isdigit():
+        if first_word.replace('.', '', 1).isdigit() and last_word.startswith('#'):
             amount = float(first_word)
             hashtag = parts[-1]
             totals_by_hashtag[hashtag] += amount
@@ -98,13 +98,13 @@ if pg_host:
         user=os.environ.get('PGUSER'),
         password=os.environ.get('PGPASSWORD'),
     )
-with pg_conn:
-    with pg_conn.cursor() as cur:
-        cur.executemany(
-            '''
-            INSERT INTO tbl_expenses (id, date_start, hashtag, summary, amount, url) VALUES (%s, %s, %s, %s, %s, %s)
-            ON CONFLICT (id) DO UPDATE SET (date_start, hashtag, summary, amount, url) =
-            (EXCLUDED.date_start, EXCLUDED.hashtag, EXCLUDED.summary, EXCLUDED.amount, EXCLUDED.url)
-            ''',
-            events_with_expenses
-        )
+    with pg_conn:
+        with pg_conn.cursor() as cur:
+            cur.executemany(
+                '''
+                INSERT INTO tbl_expenses (id, date_start, hashtag, summary, amount, url) VALUES (%s, %s, %s, %s, %s, %s)
+                ON CONFLICT (id) DO UPDATE SET (date_start, hashtag, summary, amount, url) =
+                (EXCLUDED.date_start, EXCLUDED.hashtag, EXCLUDED.summary, EXCLUDED.amount, EXCLUDED.url)
+                ''',
+                events_with_expenses
+            )
