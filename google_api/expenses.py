@@ -18,7 +18,7 @@ else:
 if len(sys.argv) > 2:
       month_end = sys.argv[2] + time_suffix
 else:
-      month_end = datetime.datetime.today().date().isoformat() + time_suffix
+      month_end = (datetime.datetime.today() + datetime.timedelta(days=1)).date().isoformat() + time_suffix
 
 db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'expenses.db')
 with sqlite3.connect(db_path) as conn:
@@ -37,6 +37,7 @@ events_result = gcal_service.events().list(calendarId='primary',
                                         timeMax=month_end,
                                         maxResults=2500, # default is 250, max is 2500
                                         singleEvents=True,
+                                        q='#',
                                         orderBy='startTime').execute()
 
 events = events_result.get('items', [])
