@@ -4,6 +4,9 @@ from gcal import service as gcal_service
 from collections import defaultdict
 
 # sample: 2021-11-29T13:31:42.108271Z - 'Z' indicates UTC time
+# https://developers.google.com/workspace/calendar/api/v3/reference/events/list
+# timeMax and timeMin must be an RFC3339 timestamp with mandatory time zone offset,
+# for example, 2011-06-03T10:00:00-07:00, 2011-06-03T10:00:00Z.
 
 time_suffix = 'T00:00:00.000000Z'
 
@@ -32,12 +35,11 @@ with sqlite3.connect(db_path) as conn:
 events_result = gcal_service.events().list(calendarId='primary',
                                         timeMin=month_start,
                                         timeMax=month_end,
-                                        #maxResults=10,
+                                        maxResults=2500, # default is 250, max is 2500
                                         singleEvents=True,
                                         orderBy='startTime').execute()
 
 events = events_result.get('items', [])
-print(events)
 
 totals_by_hashtag = defaultdict(float)
 grand_total = 0
@@ -81,13 +83,13 @@ for event in events:
 
 sorted_dict = dict(sorted(totals_by_hashtag.items()))
 for k in sorted_dict:
-     print(k[1:]+'\t'+str(sorted_dict[k]))
+    print(k[1:]+'\t'+str(sorted_dict[k]))
 print('Total:', grand_total)
 
 with sqlite3.connect(db_path) as conn:
     conn.executemany('INSERT OR REPLACE INTO expenses VALUES (?, ?, ?, ?, ?, ?)', events_with_expenses)
     conn.commit()
-print(f'Saved to {db_path}')
+#print(f'Saved to {db_path}')
 
 pg_host = os.environ.get('PGHOST')
 if pg_host:
