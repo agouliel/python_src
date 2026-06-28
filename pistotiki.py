@@ -11,3 +11,16 @@ for numstr in sys.argv[1]:
     print(numstr, end='')
 
 print()
+
+# do it again without dashes
+for numstr in sys.argv[1]:
+  try:
+    i = int(numstr)
+    if i == 0:
+      print('9', end='')
+    else:
+      print(int(i)-1, end='')
+  except:
+    pass
+
+print()
