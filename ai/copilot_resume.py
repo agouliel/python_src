@@ -16,6 +16,7 @@ import os
 import sqlite3
 import subprocess
 import sys
+import shutil
 
 
 DB_PATH = os.path.join(os.path.expanduser("~"), ".copilot", "session-store.db")
@@ -107,7 +108,16 @@ def main():
         return
 
     selected_id = sessions[choice][0]
-    subprocess.run(["copilot", f"--resume={selected_id}"])
+
+    # on Windows `copilot`` is most likely a copilot.cmd shim (typical for an npm global install),
+    # and Python's subprocess can't resolve a bare copilot name to a .cmd file.
+    # The fix uses shutil.which("copilot"), which respects PATHEXT and returns the full path, so the shim gets found.
+    copilot_path = shutil.which("copilot")
+    if copilot_path is None:
+        print("Could not find 'copilot' on your PATH.", file=sys.stderr)
+        sys.exit(1)
+
+    subprocess.run([copilot_path, f"--resume={selected_id}"])
 
 
 if __name__ == "__main__":
